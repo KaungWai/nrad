@@ -15,7 +15,6 @@ fetchData()
  .then((data) =>{
 console.log(data.name + " is a " +data.age+ " years old " +data.gender)
  })
-
  .catch((error)=>{
     console.log(error.message)
  })
