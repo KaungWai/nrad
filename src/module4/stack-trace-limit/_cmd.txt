@@ -1,0 +1,5 @@
+# run with default stack trace limit
+node app.js
+
+# run with custom stack trace limit
+node --stack-trace-limit=101 app.js
