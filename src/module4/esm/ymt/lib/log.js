@@ -1,11 +1,11 @@
-function doInfoLog(text) {
+export default {
+    doInfoLog: function(text){
     console.log(`Info: ${text}`)
-  }
-
-  function doWarningLog(text) {
+  },
+  doWarningLog: function(text){
     console.warn(`Warning: ${text}`)
-  }
-
-  function doErrorLog (text) {
+  },
+  doErrorLog : function(text) {
     console.error(`Error: ${text}`)
   }
+}
