@@ -2,7 +2,9 @@ import os from 'node:os';
 
 let cpuArch = os.arch();
 let cpus = os.cpus();
-let ram = os.totalmem();
+let ramByte = os.totalmem();
+let ramGB = ramByte / (1024 ** 3) // for kb, mb, gb
+let ram = ramGB.toFixed(2);
 
 console.log(`CPU architecture: ${cpuArch}`)
 
