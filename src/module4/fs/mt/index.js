@@ -6,11 +6,11 @@ const jsonData = fs.readFileSync("./data.json", {
 
 const arr = JSON.parse(jsonData);
 
-let csvData = `"name", "conutry", "phone"`;
+let csvData = `"name","conutry","phone"`;
 
 arr.forEach(element => {
     csvData += "\r\n";
-    csvData += `"${element.name}", "${element.country}", "${element.phone}"`
+    csvData += `"${element.name}","${element.country}","${element.phone}"`
 });
 
 fs.writeFileSync("./data.csv", csvData, {
