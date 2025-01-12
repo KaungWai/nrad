@@ -1,18 +1,25 @@
 const fs = require("node:fs")
 
-const jsonData = fs.readFileSync('./data.json', {
+fs.readFile('./data.json', {
     encoding: 'utf-8'
-})
+}, (err, data) => {
+    if (err) {
+        console.log(err.message)
+        return
+    }
 
-const arr = JSON.parse(jsonData)
+    const arr = JSON.parse(data)
 
-let csvData = `"name","country","phone"`;
+    let csvData = `"name","country","phone"`;
 
-arr.forEach(element => {
-    csvData += "\r\n"
-    csvData += `"${element.name}","${element.country}","${element.phone}"`
-});
+    arr.forEach(element => {
+        csvData += "\r\n"
+        csvData += `"${element.name}","${element.country}","${element.phone}"`
+    });
 
-fs.writeFileSync('./data.csv', csvData, {
-    encoding: 'utf-8'
+    fs.writeFile('./data.csv', csvData, {
+        encoding: 'utf-8'
+    }, () => {
+        console.log('write finish')
+    })
 })
