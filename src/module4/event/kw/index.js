@@ -1,5 +1,10 @@
 const { temperatureSensor } = require('./sensor')
 
+const firstAlert = (temp) => {
+    console.log(`First temp is ${temp}.`)
+}
+temperatureSensor.once('measure', firstAlert)
+
 // department 1: alert people if temp over 35
 const listener1 = (temp) => {
     if(temp > 35) {
@@ -24,3 +29,9 @@ const listener3 = (temp) => {
     }
 }
 temperatureSensor.on('measure', listener3)
+
+const errorListener = (e) => {
+    console.log(e.message)
+    temperatureSensor.removeAllListeners('measure')
+}
+temperatureSensor.on("error", errorListener)
