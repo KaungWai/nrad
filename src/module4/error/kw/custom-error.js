@@ -16,4 +16,4 @@ function getPriceTag(price, productName = "sample") {
     return `Price of ${productName} is ${price}`
 }
 
-getPriceTag(-1)
+console.log(getPriceTag(100, "apple"))
