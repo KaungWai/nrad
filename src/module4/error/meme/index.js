@@ -1,6 +1,6 @@
 const getBurmeseNumber = require('./lib/getBurmeseNumber.js');
 
-function testGetBurmeseNumber(num) {
+function memeFormatBurmeseNumber(num) {
     try {
         console.log(getBurmeseNumber(num));
     } catch (e) {
@@ -13,7 +13,7 @@ function testGetBurmeseNumber(num) {
 }
 
 // Test cases
-testGetBurmeseNumber(300);
-testGetBurmeseNumber(200);
-testGetBurmeseNumber(102.3);
-// testGetBurmeseNumber(-1);
+memeFormatBurmeseNumber(300);
+memeFormatBurmeseNumber(200);
+memeFormatBurmeseNumber(102.3);
+// memeFormatBurmeseNumber(-1);
