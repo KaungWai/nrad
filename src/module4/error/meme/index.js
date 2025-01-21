@@ -1,19 +1,16 @@
-const getBurmeseNumber = require('./lib/getBurmeseNumber.js');
+var myanmarNumbers = require("myanmar-numbers");
 
 function memeFormatBurmeseNumber(num) {
-    try {
-        console.log(getBurmeseNumber(num));
-    } catch (e) {
-        if (e instanceof TypeError) {
-            console.log('Number must be an integer value.');
-        } else if (e instanceof RangeError) {
-            console.log('Number must be an integer value between 0 and Max integer.');
-        }
+    if (!Number.isInteger(num)) {
+        throw new TypeError('Number must be an integer value.');
     }
+    
+    if ((num < 0) || (num > Number.MAX_SAFE_INTEGER)) {
+        throw new RangeError('Number must be an integer value between 0 and Max integer.');
+    }
+
+    return myanmarNumbers(num, 'my');
 }
 
-// Test cases
-memeFormatBurmeseNumber(300);
-memeFormatBurmeseNumber(200);
-memeFormatBurmeseNumber(102.3);
-// memeFormatBurmeseNumber(-1);
+module.exports = memeFormatBurmeseNumber;
+
