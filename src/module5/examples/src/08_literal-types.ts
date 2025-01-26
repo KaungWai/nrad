@@ -16,7 +16,7 @@ interface Log {
     message: string 
 }
 const logObj:Log = {
-    level: "INFO",
+    level: "DEBUG",
     message: "Program has started"
 }
 

@@ -1,5 +1,4 @@
 function getEmployee(id: number | string) {
-    // do something
     if(typeof id === 'string') {
         id.length
     } else {

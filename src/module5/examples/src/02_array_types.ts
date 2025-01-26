@@ -13,6 +13,6 @@ myProductArray.push({
     itemName: "Macbook Air M2",
     price: 200000
 })
-// myProductArray.push({}) // error
+myProductArray.push({}) // error
 
 export {};

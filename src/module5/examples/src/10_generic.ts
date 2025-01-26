@@ -13,7 +13,10 @@ interface KeyValuePair<V> {
     key: number;
     value: V;
 }
-const kv: KeyValuePair<string> = {
+
+const kv: KeyValuePair<boolean> = {
     key: 1,
-    value: ""
+    value: true
 }
+
+export {}
