@@ -19,8 +19,8 @@ model Supplier {
   supplier_phone   String   @db.VarChar(14)
   supplier_email   String   @db.VarChar(256)
   supplier_address String   @db.VarChar(200)
-  created_at       DateTime
-  updated_at       DateTime
+  created_at       DateTime @default(now())
+  updated_at       DateTime @default(now())
 
   purchases Purchase[]
 }
@@ -29,8 +29,8 @@ model Product {
   product_id   String   @id @default(uuid()) @db.VarChar(36)
   product_name String   @db.VarChar(100)
   quantity     Int
-  created_at   DateTime
-  updated_at   DateTime
+  created_at   DateTime @default(now())
+  updated_at   DateTime @default(now())
 
   purchase_detail PurchaseDetail?
 }
@@ -40,10 +40,10 @@ model Purchase {
   purchase_date DateTime
   arrival_date  DateTime
   supplier_id   String   @db.VarChar(36)
-  remark        String   @unique @db.VarChar(500)
+  remark        String?  @db.VarChar(500)
   status        Status
-  created_at    DateTime
-  updated_at    DateTime
+  created_at    DateTime @default(now())
+  updated_at    DateTime @default(now())
 
   purchase_detail PurchaseDetail[]
   supplier        Supplier         @relation(fields: [supplier_id], references: [supplier_id])
@@ -51,11 +51,11 @@ model Purchase {
 
 model PurchaseDetail {
   purchase_detail_id String   @id @default(uuid()) @db.VarChar(36)
-  purchase_id        String   @default(uuid()) @db.VarChar(36)
+  purchase_id        String   @unique @default(uuid()) @db.VarChar(36)
   product_id         String   @unique @default(uuid()) @db.VarChar(36)
   quantity           Int
-  created_at         DateTime
-  updated_at         DateTime
+  created_at         DateTime @default(now())
+  updated_at         DateTime @default(now())
 
   purchase Purchase @relation(fields: [purchase_id], references: [purchase_id])
   product  Product  @relation(fields: [product_id], references: [product_id])
