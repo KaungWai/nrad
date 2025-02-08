@@ -1,0 +1,70 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model POST {
+  id      Int    @id @default(autoincrement())
+  title   String
+  content String
+  USER_ID Int    @map("_USER_ID")
+  User    User   @relation(fields: [USER_ID], references: [id])
+}
+
+model Permission {
+  id             Int              @id @default(autoincrement())
+  permission     PERMISSION
+  UserPermission UserPermission[]
+}
+
+model Profile {
+  id              Int      @id @default(autoincrement())
+  bio             String?
+  profile_picture String?
+  user_id         Int      @unique
+  update_date     DateTime @default(now())
+  century         Int      @default(dbgenerated("EXTRACT(century FROM '2000-12-16 12:21:13'::timestamp without time zone)"))
+  User            User     @relation(fields: [user_id], references: [id])
+}
+
+model Setting {
+  group String
+  key   String
+  value String
+  id    String @id @db.VarChar(36)
+
+  @@unique([group, key])
+}
+
+model User {
+  id             Int              @id @default(autoincrement())
+  email          String           @unique
+  phone          String
+  password       String
+  update_date    DateTime
+  POST           POST[]
+  Profile        Profile?
+  UserPermission UserPermission[]
+
+  @@index([phone])
+}
+
+model UserPermission {
+  user_id       Int
+  permission_id Int
+  Permission    Permission @relation(fields: [permission_id], references: [id])
+  User          User       @relation(fields: [user_id], references: [id])
+
+  @@id([user_id, permission_id])
+}
+
+enum PERMISSION {
+  ADMIN
+  EDITOR
+  AUDIENCE
+  ANONYMOUS
+}
