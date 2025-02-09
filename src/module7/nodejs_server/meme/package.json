@@ -1,0 +1,29 @@
+{
+  "name": "meme",
+  "version": "1.0.0",
+  "main": "index.js",
+  "directories": {
+    "lib": "lib"
+  },
+  "scripts": {
+    "dev": "tsc && node ./dist/index.js",
+    "dev01": "tsc && node ./dist/01_server.js",
+    "dev02": "tsc && node ./dist/02_server.js",
+    "dev03": "tsc && node ./dist/03_server.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "@faker-js/faker": "^9.4.0",
+    "@types/node": "^22.13.1",
+    "prisma": "^6.3.1",
+    "typescript": "^5.7.3"
+  },
+  "dependencies": {
+    "@prisma/client": "^6.3.1",
+    "dotenv": "^16.4.7",
+    "yup": "^1.6.1"
+  }
+}
