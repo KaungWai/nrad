@@ -1,6 +1,6 @@
-export function encodeQuery(targetObj: any) {
+function encodeQuery(targetObj: any) {
     const processObject = (targetObj: any, prefix = '') => {
-        let queries:string[] = []
+        let queries: string[] = []
         Object.keys(targetObj).forEach(currentKey => {
             if (typeof targetObj[currentKey] == 'object') {
                 let nextPrefix = ''
@@ -23,8 +23,14 @@ export function encodeQuery(targetObj: any) {
     return processObject(targetObj).join("&")
 }
 
-export function decodeQuery(queryString: string) {
-    const obj:any = {};
+function decodeQuery(url: URL) {
+    const obj: any = {};
+
+    if (url.search) {
+        return obj
+    }
+
+    const queryString = url.search.substring(1) // remove ?
     queryString.split('&').forEach(pair => {
         let [key, value] = pair.split('=');
         key = decodeURIComponent(key);
@@ -41,4 +47,9 @@ export function decodeQuery(queryString: string) {
         current[keys[0]] = value;
     });
     return obj;
+}
+
+export const queryUtils = {
+    encodeQuery,
+    decodeQuery
 }
