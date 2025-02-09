@@ -1,9 +1,14 @@
 import { getUsersHandler } from './handlers/getUsersHandler'
 import { rootHandler } from './handlers/rootHandler'
 
-export const router = {
+const routes = {
     "/": rootHandler,
     "/users": getUsersHandler,
 }
 
-export type RouterUrl = keyof typeof router
+type RouterUrl = keyof typeof routes
+
+export const router = (url: URL) => {
+    const pathName = url.pathname as RouterUrl
+    return routes[pathName]
+}

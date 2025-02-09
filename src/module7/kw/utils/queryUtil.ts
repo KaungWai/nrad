@@ -23,10 +23,21 @@ function encodeQuery(targetObj: any) {
     return processObject(targetObj).join("&")
 }
 
+/**
+ * Decode Query
+ * @param url URL object
+ * @returns query object
+ * @example
+ * const url = new URL("http;//example.com/users?filter[role]=employee&filter[age][gte]=25&sorting[name]=asc&sorting[birthdate]=desc&skip=0&limit=10");
+ * const query = decodeQuery(url); // query is now an object with nested properties
+ * 
+ * console.log(query.filter.role); // "employee"
+ * console.log(query.filter.age.gte); // "25"
+ */
 function decodeQuery(url: URL) {
     const obj: any = {};
 
-    if (url.search) {
+    if (!url.search || url.search.trim() == '') {
         return obj
     }
 
