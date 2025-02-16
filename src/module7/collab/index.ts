@@ -21,6 +21,7 @@ server.on('request', (request: MyRequest, response: MyResponse) => {
         if (rawBody.trim() !== "") {
             request.myBody = JSON.parse(rawBody)
         }
+
         const urlObj = requestUtils.getURLObject(request)
         const handlers = router(urlObj)
         
