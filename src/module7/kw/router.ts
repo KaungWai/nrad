@@ -60,8 +60,8 @@ export const router = (url: URL) => {
 
 /*
 
-/users/:user_id/ = ["users", ":user_id"] = 3
+/users/:user_id/ = ["", "users", ":user_id", ""] = ["users", ":user_id"]
 
-/users/0394a8af-7ae2-4515-8a77-9c6fcf94f065/ = ["users", "0394a8af-7ae2-4515-8a77-9c6fcf94f065"] = 3
+/users/0394a8af/ = ["", "users", "0394a8af", ""] = ["users", "0394a8af"]
 
 */
