@@ -3,15 +3,36 @@ import { router } from './router';
 import { notFoundHandler } from './handlers/notFoundHandler';
 import { config } from 'dotenv'
 import { requestUtils } from './utils/requestUtils';
+import { MyRequest, MyResponse } from './types/types';
 
 config()
 
 const server = http.createServer()
 
-server.on('request', (request, response) => {
-    const urlObj = requestUtils.getURLObject(request)
-    const handler = router(urlObj) ?? notFoundHandler
-    handler(request, response)
+server.on('request', (request: MyRequest, response: MyResponse) => {
+
+    let rawBody = ""
+
+    request.on('data', (chunk) => {
+        rawBody += chunk
+    })
+
+    request.on('end', () => {
+        request.myBody = JSON.parse(rawBody)
+        const urlObj = requestUtils.getURLObject(request)
+        const handlers = router(urlObj)
+        
+        if (!handlers) {
+            notFoundHandler(request, response)
+        } else {
+            const targetHandler = handlers[(request.method ?? '') as keyof typeof handlers]
+            if (targetHandler) {
+                targetHandler(request, response)
+            } else {
+                notFoundHandler(request, response)
+            }
+        }
+    })
 });
 
 server.listen(process.env.PORT, () => {

@@ -3,8 +3,7 @@ import { MyRequest, MyResponse } from "../types/types";
 import * as Yup from 'yup'
 import { queryUtils } from '../utils/queryUtil';
 import { requestUtils } from '../utils/requestUtils';
-
-const prisma = new PrismaClient()
+import { prismaInstance } from '../utils/prisma';
 
 const querySchema = Yup.object({
     filter: Yup.object({
@@ -34,7 +33,7 @@ export async function getUsersHandler(request: MyRequest, response: MyResponse) 
         await querySchema.validate(query)
         query = querySchema.cast(query)
 
-        const users = await prisma.user.findMany({
+        const users = await prismaInstance.user.findMany({
             where: {
                 user_id: query.filter.userId,
                 user_name: {

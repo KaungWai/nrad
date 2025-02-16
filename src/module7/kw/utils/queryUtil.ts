@@ -28,7 +28,7 @@ function encodeQuery(targetObj: any) {
  * @param url URL object
  * @returns query object
  * @example
- * const url = new URL("http;//example.com/users?filter[role]=employee&filter[age][gte]=25&sorting[name]=asc&sorting[birthdate]=desc&skip=0&limit=10");
+ * const url = new URL("http://example.com/users?filter[role]=employee&filter[age][gte]=25&sorting[name]=asc&sorting[birthdate]=desc&skip=0&limit=10");
  * const query = decodeQuery(url); // query is now an object with nested properties
  * 
  * console.log(query.filter.role); // "employee"
