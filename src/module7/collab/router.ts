@@ -1,9 +1,23 @@
+import { createUserHandler } from "./handlers/createUserHandler"
+import { deleteUserByIdHandler } from "./handlers/deleteUserByIdHandler"
+import { getUserByIdHandler } from "./handlers/getUserByIdHandler"
+import { getUsersHandler } from "./handlers/getUsersHandler"
 import { rootHandler } from "./handlers/rootHandler"
+import { updateUserByIdHandler } from "./handlers/updateUserByIdHandler"
 
 const routes = {
     "/": {
         GET: rootHandler,
-    }
+    },
+    "/users": {
+        GET: getUsersHandler,
+        POST: createUserHandler
+    },
+    "/users/:user_id": {
+        GET: getUserByIdHandler,
+        DELETE: deleteUserByIdHandler,
+        PATCH: updateUserByIdHandler
+    },
 }
 
 type RouterUrl = keyof typeof routes
