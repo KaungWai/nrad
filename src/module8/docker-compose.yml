@@ -3,7 +3,7 @@ version: '3.8'
 services:
   postgres:
     image: postgres:latest
-    container_name: nrad_postgre
+    container_name: nrad_bookdb
     environment:
       POSTGRES_DB: nrad_db
       POSTGRES_USER: nrad_user
