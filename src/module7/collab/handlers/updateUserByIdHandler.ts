@@ -45,7 +45,6 @@ export async function updateUserByIdHandler(request: MyRequest, response: MyResp
                 user_id: body.user_id,
                 user_name: body.user_name,
                 user_email: body.user_email,
-                created_at: new Date(),
                 updated_at: new Date()
             }
         })
@@ -60,7 +59,7 @@ export async function updateUserByIdHandler(request: MyRequest, response: MyResp
                 "Content-Type": "application/json",
             })
             response.end(JSON.stringify({
-                error: ["error message1", "error message2"]
+                error: e.errors
             }))
         } else {
             console.log(e)
