@@ -1,0 +1,12 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:latest
+    container_name: nrad_postgre
+    environment:
+      POSTGRES_DB: nrad_db
+      POSTGRES_USER: nrad_user
+      POSTGRES_PASSWORD: nrad_password
+    ports:
+      - "5432:5432"
