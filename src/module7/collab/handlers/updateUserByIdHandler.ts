@@ -42,7 +42,6 @@ export async function updateUserByIdHandler(request: MyRequest, response: MyResp
                 user_id: userId
             },
             data: {
-                user_id: body.user_id,
                 user_name: body.user_name,
                 user_email: body.user_email,
                 updated_at: new Date()
