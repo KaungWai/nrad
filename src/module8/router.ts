@@ -1,8 +1,16 @@
+import { createAuthorHandler } from "./handlers/author/createAuthorHandler"
+import { deleteAuthorByIdHandler } from "./handlers/author/deleteAuthorByIdHandler"
+import { getAuthorsHandler } from "./handlers/author/getAuthorsHandler"
+import { updateAuthorByIdHandler } from "./handlers/author/updateAuthorByIdHandler"
 import { createCategoryHandler } from "./handlers/category/createCategoryHandler"
 import { deleteCategoryByIdHandler } from "./handlers/category/deleteCategoryByIdHandler"
 import { getCategoriesHandler } from "./handlers/category/getCategoriesHandler"
 import { getCategoryByIdHandler } from "./handlers/category/getCategoryByIdHandler"
 import { updateCategoryByIdHandler } from "./handlers/category/updateCategoryByIdHandler"
+import { createPublisherHandler } from "./handlers/publisher/createPublisherHandler"
+import { deletePublisherByIdHandler } from "./handlers/publisher/deletePublisherByIdHandler"
+import { getPublishersHandler } from "./handlers/publisher/getPublishersHandler"
+import { updatePublisherByIdHandler } from "./handlers/publisher/updatePublisherByIdHandler"
 import { rootHandler } from "./handlers/rootHandler"
 
 const routes = {
@@ -18,6 +26,22 @@ const routes = {
         PATCH: updateCategoryByIdHandler,
         DELETE: deleteCategoryByIdHandler
     },
+    "/authors": {
+        GET: getAuthorsHandler,
+        POST: createAuthorHandler,
+    },
+    "/authors/:author_id": {
+        PATCH: updateAuthorByIdHandler,
+        DELETE: deleteAuthorByIdHandler,
+    },
+    "/publishers": {
+        GET: getPublishersHandler,
+        POST: createPublisherHandler,
+    },
+    "/publishers/:author_id": {
+        PATCH: updatePublisherByIdHandler,
+        DELETE: deletePublisherByIdHandler,
+    }
 }
 
 type RouterUrl = keyof typeof routes
