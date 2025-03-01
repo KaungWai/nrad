@@ -23,12 +23,12 @@ server.on('request', (request: MyRequest, response: MyResponse) => {
         }
 
         const urlObj = requestUtils.getURLObject(request)
-        const handlers = router(urlObj)
+        const handlers:any = router(urlObj)
 
         if (!handlers) {
             defaultHandler(request, response)
         } else {
-            const targetHandler = handlers[(request.method ?? '') as keyof typeof handlers]
+            const targetHandler = handlers[request.method ?? '']
             if (targetHandler) {
                 targetHandler(request, response)
             } else {
