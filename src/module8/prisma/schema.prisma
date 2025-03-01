@@ -19,3 +19,17 @@ model Category {
   created_at    DateTime
   updated_at    DateTime
 }
+
+model Author {
+  author_id   String   @id @default(uuid()) @db.VarChar(36)
+  author_name String   @db.VarChar(200)
+  created_at  DateTime
+  updated_at  DateTime
+}
+
+model Publisher {
+  publisher_id   String   @id @default(uuid()) @db.VarChar(36)
+  publisher_name String   @db.VarChar(200)
+  created_at  DateTime
+  updated_at  DateTime
+}
