@@ -1,6 +1,6 @@
 import http from 'node:http'
 import { router } from './router';
-import { notFoundHandler } from './handlers/notFoundHandler';
+import { defaultHandler } from './handlers/defaultHandler';
 import { config } from 'dotenv'
 import { requestUtils } from './utils/requestUtils';
 import { MyRequest, MyResponse } from './types/types';
@@ -24,15 +24,15 @@ server.on('request', (request: MyRequest, response: MyResponse) => {
 
         const urlObj = requestUtils.getURLObject(request)
         const handlers = router(urlObj)
-        
+
         if (!handlers) {
-            notFoundHandler(request, response)
+            defaultHandler(request, response)
         } else {
             const targetHandler = handlers[(request.method ?? '') as keyof typeof handlers]
             if (targetHandler) {
                 targetHandler(request, response)
             } else {
-                notFoundHandler(request, response)
+                defaultHandler(request, response)
             }
         }
     })

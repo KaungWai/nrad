@@ -1,0 +1,16 @@
+* {
+    font-family: monospace;
+}
+
+body {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.mb10 {
+    margin-bottom: 10px;
+}
+
+.txt20 {
+    font-size: 20px;
+}

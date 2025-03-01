@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Manager</title>
+    <script src="./js/vue.js"></script>
+    <link rel="stylesheet" href="./css/util.css">
+    <link rel="stylesheet" href="./css/style.css">
+</head>
+
+<body>
+    <div id="app">
+        <ul id="header">
+            <li @click="activePage = 'Home'">Home</li>
+            <li @click="activePage = 'Books'">Books</li>
+            <li @click="activePage = 'Authors'">Authors</li>
+            <li @click="activePage = 'Publishers'">Publishers</li>
+            <li @click="activePage = 'Categories'">Categories</li>
+        </ul>
+
+        <div v-if="activePage == 'Home'">
+            <div class="page-title">
+                Home
+            </div>
+        </div>
+        <div v-if="activePage == 'Books'">
+            <div class="page-title">
+                Books
+            </div>
+        </div>
+        <div v-if="activePage == 'Authors'">
+            <div class="page-title">
+                Authors
+            </div>
+        </div>
+        <div v-if="activePage == 'Publishers'">
+            <div class="page-title">
+                Publishers
+            </div>
+        </div>
+        <div v-if="activePage == 'Categories'">
+            <div class="page-title">
+                Categories
+            </div>
+            <div class="page-body">
+                <div class="mb10">
+                    <div class="txt20 mb10">New Category</div>
+                    <span>Category Name:</span> <input type="text" v-model="category.categoryCreateForm.category_name">
+                    <button @click="createCategory">Create</button>
+                </div>
+                <div class="txt20 mb10">Category List <a href="#" @click="fetchCategories">Refresh</a></div>
+                <table class="data-table mb10">
+                    <thead>
+                        <tr>
+                            <td></td>
+                            <td>No</td>
+                            <td>Category ID</td>
+                            <td>Category Name</td>
+                            <td>Created At</td>
+                            <td>Updated At</td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="category, idx in category.categoryList" :key="category.category_id">
+                            <td><input type="radio" :value="category.category_id" v-model="categoryPicked" @change="pickCategory"></td>
+                            <td>{{ idx + 1 }}</td>
+                            <td>{{category.category_id}}</td>
+                            <td>{{category.category_name}}</td>
+                            <td>{{category.created_at}}</td>
+                            <td>{{category.updated_at}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="mb10" v-if="categoryPicked != ''">
+                    <div class="txt20 mb10">Update Category</div>
+                    <span>Category ID:</span> <input type="text" readonly v-model="category.categoryUpdateForm.category_id">
+                    <span>Category Name:</span> <input type="text" v-model="category.categoryUpdateForm.category_name">
+                    <button @click="updateCategory">Update</button>
+                    <button @click="deleteCategory">Delete</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="error-box">{{ error }}</div>
+    </div>
+
+    <script>
+        const baseURL = 'http://localhost:8080'
+
+        var app = new Vue({
+            el: '#app',
+            data: {
+                activePage: 'Categories',
+                message: 'Hello Vue!',
+                error: '',
+                category: {
+                    categoryCreateForm: {
+                        category_name: '',
+                    },
+                    categoryUpdateForm: {
+                        category_id: '',
+                        category_name: '',
+                    },
+                    categoryList: [],
+                },
+                categoryPicked: ''
+            },
+            methods: {
+                async createCategory() {
+                    if (!confirm("Are you sure want to create?")) {
+                        return
+                    }
+                    const response = await fetch(`${baseURL}/categories`, {
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        method: 'POST',
+                        body: JSON.stringify(this.category.categoryCreateForm)
+                    })
+                    if (response.ok) {
+                        this.category.categoryCreateForm.category_name = ''
+                        this.fetchCategories()
+                    } else {
+                        const body = await response.json()
+                        this.error = body.error
+
+                        setInterval(() => {
+                            this.error = ''
+                        }, 5000)
+                    }
+                },
+                async pickCategory() {
+                    if(this.categoryPicked.trim() == '') {
+                        return
+                    }
+                    const index = this.category.categoryList.findIndex(x => x.category_id == this.categoryPicked)
+                    this.category.categoryUpdateForm = JSON.parse(JSON.stringify(this.category.categoryList[index]))
+                },
+                async fetchCategories() {
+                    const response = await fetch(`${baseURL}/categories`)
+                    if (response.ok) {
+                        this.category.categoryList = (await response.json()).category
+                    } else {
+                        const body = await response.json()
+                        this.error = body.error
+
+                        setInterval(() => {
+                            this.error = ''
+                        }, 5000)
+                    }
+                },
+                async updateCategory() {
+                    if (this.categoryPicked.trim() == '' || !confirm("Are you sure want to update?")) {
+                        return
+                    }
+                    const response = await fetch(`${baseURL}/categories/${this.categoryPicked}`, {
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        method: 'PATCH',
+                        body: JSON.stringify(this.category.categoryUpdateForm)
+                    })
+                    if (response.ok) {
+                        this.categoryPicked = ''
+                        this.fetchCategories()
+                    } else {
+                        const body = await response.json()
+                        this.error = body.error
+
+                        setInterval(() => {
+                            this.error = ''
+                        }, 5000)
+                    }
+                },
+                async deleteCategory() {
+                    if (this.categoryPicked.trim() == '' || !confirm("Are you sure want to delete?")) {
+                        return
+                    }
+                    await fetch(`${baseURL}/categories/${this.categoryPicked}`, {
+                        method: 'DELETE'
+                    })
+                    this.categoryPicked = ''
+                    this.fetchCategories()
+                }
+            }
+        })
+    </script>
+</body>
+
+</html>

@@ -5,8 +5,7 @@ import { requestUtils } from "../../utils/requestUtils";
 import { prismaInstance } from "../../utils/prisma";
 
 const bodySchema = Yup.object({
-    category_id: Yup.string().max(50).required(),
-    category_name: Yup.string().max(100).required(),
+    category_name: Yup.string().max(200).required(),
 })
 
 type Body = Yup.InferType<typeof bodySchema>
@@ -42,7 +41,6 @@ export async function updateCategoryByIdHandler(request: MyRequest, response: My
                 category_id: categoryId
             },
             data: {
-                category_id: body.category_id,
                 category_name: body.category_name,
                 updated_at: new Date()
             }
