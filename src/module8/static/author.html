@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Manager</title>
+    <script src="./js/vue.js"></script>
+    <link rel="stylesheet" href="./css/util.css">
+    <link rel="stylesheet" href="./css/style.css">
+</head>
+
+<body>
+    <div id="app">
+        <ul id="header">
+            <li>
+                <a href="./index.html">Home</a>
+            </li>
+            <li>
+                <a href="./book.html">Books</a>
+            </li>
+            <li>
+                <a href="./author.html">Authors</a>
+            </li>
+            <li>
+                <a href="./publisher.html">
+                    Publishers
+                </a>
+            </li>
+            <li>
+                <a href="./category.html">
+                    Categories
+                </a>
+            </li>
+        </ul>
+        <div>
+            <div class="page-title">
+                Home > Authors
+            </div>
+            <div class="page-body">
+                <div class="mb10">
+                    <div class="txt20 mb10">New Author</div>
+                    <span>Author Name:</span> <input type="text" v-model="authorCreateForm.author_name">
+                    <button @click="createAuthor">Create</button>
+                </div>
+                <div class="txt20 mb10">Author List <a href="#" @click="fetchAuthors">Refresh</a></div>
+                <table class="data-table mb10">
+                    <thead>
+                        <tr>
+                            <td></td>
+                            <td>No</td>
+                            <td>Author ID</td>
+                            <td>Author Name</td>
+                            <td>Created At</td>
+                            <td>Updated At</td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="author, idx in authorList" :key="author_id">
+                            <td><input type="radio" :value="author.author_id" v-model="authorPicked"
+                                    @change="pickAuthor"></td>
+                            <td>{{ idx + 1 }}</td>
+                            <td>{{author.author_id}}</td>
+                            <td>{{author.author_name}}</td>
+                            <td>{{author.created_at}}</td>
+                            <td>{{author.updated_at}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="mb10" v-if="authorPicked != ''">
+                    <div class="txt20 mb10">Update Author</div>
+                    <span>Author ID:</span> <input type="text" readonly
+                        v-model="authorUpdateForm.author_id">
+                    <span>Author Name:</span> <input type="text" v-model="authorUpdateForm.author_name">
+                    <button @click="updateAuthor">Update</button>
+                    <button @click="deleteAuthor">Delete</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="error-box">{{ error }}</div>
+    </div>
+
+    <script>
+        const baseURL = 'http://localhost:8080'
+
+        var app = new Vue({
+            el: '#app',
+            data: {
+                message: 'Hello Vue!',
+                error: '',
+                authorCreateForm: {
+                    author_name: '',
+                },
+                authorUpdateForm: {
+                    author_id: '',
+                    author_name: '',
+                },
+                authorList: [],
+                authorPicked: ''
+            },
+            methods: {
+                async createAuthor() {
+                    if (!confirm("Are you sure want to create?")) {
+                        return
+                    }
+                    const response = await fetch(`${baseURL}/authors`, {
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        method: 'POST',
+                        body: JSON.stringify(this.authorCreateForm)
+                    })
+                    if (response.ok) {
+                        this.authorCreateForm.author_name = ''
+                        this.fetchAuthors()
+                    } else {
+                        const body = await response.json()
+                        this.error = body.error
+
+                        setInterval(() => {
+                            this.error = ''
+                        }, 5000)
+                    }
+                },
+                async pickAuthor() {
+                    if (this.authorPicked.trim() == '') {
+                        return
+                    }
+                    const index = this.authorList.findIndex(x => x.author_id == this.authorPicked)
+                    this.authorUpdateForm = JSON.parse(JSON.stringify(this.authorList[index]))
+                },
+                async fetchAuthors() {
+                    const response = await fetch(`${baseURL}/authors`)
+                    if (response.ok) {
+                        this.authorList = (await response.json()).author
+                    } else {
+                        const body = await response.json()
+                        this.error = body.error
+
+                        setInterval(() => {
+                            this.error = ''
+                        }, 5000)
+                    }
+                },
+                async updateAuthor() {
+                    if (this.authorPicked.trim() == '' || !confirm("Are you sure want to update?")) {
+                        return
+                    }
+                    const response = await fetch(`${baseURL}/authors/${this.authorPicked}`, {
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        method: 'PATCH',
+                        body: JSON.stringify(this.authorUpdateForm)
+                    })
+                    if (response.ok) {
+                        this.authorPicked = ''
+                        this.fetchAuthors()
+                    } else {
+                        const body = await response.json()
+                        this.error = body.error
+
+                        setInterval(() => {
+                            this.error = ''
+                        }, 5000)
+                    }
+                },
+                async deleteAuthor() {
+                    if (this.authorPicked.trim() == '' || !confirm("Are you sure want to delete?")) {
+                        return
+                    }
+                    await fetch(`${baseURL}/authors/${this.authorPicked}`, {
+                        method: 'DELETE'
+                    })
+                    this.authorPicked = ''
+                    this.fetchAuthors()
+                }
+            }
+        })
+    </script>
+</body>
+
+</html>

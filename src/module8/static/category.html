@@ -36,10 +36,46 @@
 
         <div>
             <div class="page-title">
-                Home
+                Home > Categories
             </div>
             <div class="page-body">
- 
+                <div class="mb10">
+                    <div class="txt20 mb10">New Category</div>
+                    <span>Category Name:</span> <input type="text" v-model="categoryCreateForm.category_name">
+                    <button @click="createCategory">Create</button>
+                </div>
+                <div class="txt20 mb10">Category List <a href="#" @click="fetchCategories">Refresh</a></div>
+                <table class="data-table mb10">
+                    <thead>
+                        <tr>
+                            <td></td>
+                            <td>No</td>
+                            <td>Category ID</td>
+                            <td>Category Name</td>
+                            <td>Created At</td>
+                            <td>Updated At</td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="category, idx in categoryList" :key="category_id">
+                            <td><input type="radio" :value="category.category_id" v-model="categoryPicked"
+                                    @change="pickCategory"></td>
+                            <td>{{ idx + 1 }}</td>
+                            <td>{{category.category_id}}</td>
+                            <td>{{category.category_name}}</td>
+                            <td>{{category.created_at}}</td>
+                            <td>{{category.updated_at}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="mb10" v-if="categoryPicked != ''">
+                    <div class="txt20 mb10">Update Category</div>
+                    <span>Category ID:</span> <input type="text" readonly
+                        v-model="categoryUpdateForm.category_id">
+                    <span>Category Name:</span> <input type="text" v-model="categoryUpdateForm.category_name">
+                    <button @click="updateCategory">Update</button>
+                    <button @click="deleteCategory">Delete</button>
+                </div>
             </div>
         </div>
 

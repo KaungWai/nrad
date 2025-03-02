@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Manager</title>
+    <script src="./js/vue.js"></script>
+    <link rel="stylesheet" href="./css/util.css">
+    <link rel="stylesheet" href="./css/style.css">
+</head>
+
+<body>
+    <div id="app">
+        <ul id="header">
+            <li>
+                <a href="./index.html">Home</a>
+            </li>
+            <li>
+                <a href="./book.html">Books</a>
+            </li>
+            <li>
+                <a href="./author.html">Authors</a>
+            </li>
+            <li>
+                <a href="./publisher.html">
+                    Publishers
+                </a>
+            </li>
+            <li>
+                <a href="./category.html">
+                    Categories
+                </a>
+            </li>
+        </ul>
+        <div>
+            <div class="page-title">
+                Home > Publishers
+            </div>
+            <div class="page-body">
+                <div class="mb10">
+                    <div class="txt20 mb10">New Publisher</div>
+                    <span>Publisher Name:</span> <input type="text" v-model="publisherCreateForm.publisher_name">
+                    <button @click="createPublisher">Create</button>
+                </div>
+                <div class="txt20 mb10">Publisher List <a href="#" @click="fetchPublishers">Refresh</a></div>
+                <table class="data-table mb10">
+                    <thead>
+                        <tr>
+                            <td></td>
+                            <td>No</td>
+                            <td>Publisher ID</td>
+                            <td>Publisher Name</td>
+                            <td>Created At</td>
+                            <td>Updated At</td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="publisher, idx in publisherList" :key="publisher_id">
+                            <td><input type="radio" :value="publisher.publisher_id" v-model="publisherPicked"
+                                    @change="pickPublisher"></td>
+                            <td>{{ idx + 1 }}</td>
+                            <td>{{publisher.publisher_id}}</td>
+                            <td>{{publisher.publisher_name}}</td>
+                            <td>{{publisher.created_at}}</td>
+                            <td>{{publisher.updated_at}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="mb10" v-if="publisherPicked != ''">
+                    <div class="txt20 mb10">Update Publisher</div>
+                    <span>Publisher ID:</span> <input type="text" readonly
+                        v-model="publisherUpdateForm.publisher_id">
+                    <span>Publisher Name:</span> <input type="text" v-model="publisherUpdateForm.publisher_name">
+                    <button @click="updatePublisher">Update</button>
+                    <button @click="deletePublisher">Delete</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="error-box">{{ error }}</div>
+    </div>
+
+    <script>
+        const baseURL = 'http://localhost:8080'
+
+        var app = new Vue({
+            el: '#app',
+            data: {
+                message: 'Hello Vue!',
+                error: '',
+                publisherCreateForm: {
+                    publisher_name: '',
+                },
+                publisherUpdateForm: {
+                    publisher_id: '',
+                    publisher_name: '',
+                },
+                publisherList: [],
+                publisherPicked: ''
+            },
+            methods: {
+                async createPublisher() {
+                    if (!confirm("Are you sure want to create?")) {
+                        return
+                    }
+                    const response = await fetch(`${baseURL}/publishers`, {
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        method: 'POST',
+                        body: JSON.stringify(this.publisherCreateForm)
+                    })
+                    if (response.ok) {
+                        this.publisherCreateForm.publisher_name = ''
+                        this.fetchPublishers()
+                    } else {
+                        const body = await response.json()
+                        this.error = body.error
+
+                        setInterval(() => {
+                            this.error = ''
+                        }, 5000)
+                    }
+                },
+                async pickPublisher() {
+                    if (this.publisherPicked.trim() == '') {
+                        return
+                    }
+                    const index = this.publisherList.findIndex(x => x.publisher_id == this.publisherPicked)
+                    this.publisherUpdateForm = JSON.parse(JSON.stringify(this.publisherList[index]))
+                },
+                async fetchPublishers() {
+                    const response = await fetch(`${baseURL}/publishers`)
+                    if (response.ok) {
+                        this.publisherList = (await response.json()).publisher
+                    } else {
+                        const body = await response.json()
+                        this.error = body.error
+
+                        setInterval(() => {
+                            this.error = ''
+                        }, 5000)
+                    }
+                },
+                async updatePublisher() {
+                    if (this.publisherPicked.trim() == '' || !confirm("Are you sure want to update?")) {
+                        return
+                    }
+                    const response = await fetch(`${baseURL}/publishers/${this.publisherPicked}`, {
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        method: 'PATCH',
+                        body: JSON.stringify(this.publisherUpdateForm)
+                    })
+                    if (response.ok) {
+                        this.publisherPicked = ''
+                        this.fetchPublishers()
+                    } else {
+                        const body = await response.json()
+                        this.error = body.error
+
+                        setInterval(() => {
+                            this.error = ''
+                        }, 5000)
+                    }
+                },
+                async deletePublisher() {
+                    if (this.publisherPicked.trim() == '' || !confirm("Are you sure want to delete?")) {
+                        return
+                    }
+                    await fetch(`${baseURL}/publishers/${this.publisherPicked}`, {
+                        method: 'DELETE'
+                    })
+                    this.publisherPicked = ''
+                    this.fetchPublishers()
+                }
+            }
+        })
+    </script>
+</body>
+
+</html>
