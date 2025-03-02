@@ -4,7 +4,6 @@ import { prismaInstance } from "../../utils/prisma";
 
 
 const publisherSchema = Yup.object({
-    publisher_id: Yup.string().max(36).required(),
     publisher_name: Yup.string().max(200).required(),
 });
 
@@ -20,7 +19,6 @@ export async function createPublisherHandler(request: MyRequest, response: MyRes
 
         const createPublisher = await prismaInstance.publisher.create({
             data: {
-                publisher_id: publisher.publisher_id,
                 publisher_name: publisher.publisher_name,
                 created_at: new Date(), 
                 updated_at: new Date(),
