@@ -36,15 +36,13 @@ export async function createCategoryHandler(request: MyRequest, response: MyResp
             })
             const body = bodySchema.cast(request.myBody)
     
-            const createUser = await prismaInstance.category.update({
-                where: {
-                    category_id: categoryId
-                },
+            const createUser = await prismaInstance.category.create({
                 data: {
                     category_name: body.category_name,
+                    created_at: new Date(),
                     updated_at: new Date()
                 }
-            })
+            });
     
             response.writeHead(201, {
                 "Content-Type": "application/json",
