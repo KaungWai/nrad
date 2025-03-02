@@ -18,6 +18,8 @@ model Category {
   category_name String   @db.VarChar(200)
   created_at    DateTime
   updated_at    DateTime
+
+  book Book[]
 }
 
 model Author {
@@ -25,11 +27,29 @@ model Author {
   author_name String   @db.VarChar(200)
   created_at  DateTime
   updated_at  DateTime
+
+  book Book[]
 }
 
 model Publisher {
   publisher_id   String   @id @default(uuid()) @db.VarChar(36)
   publisher_name String   @db.VarChar(200)
-  created_at  DateTime
-  updated_at  DateTime
+  created_at     DateTime
+  updated_at     DateTime
+
+  book Book[]
+}
+
+model Book {
+  book_id      String   @id @default(uuid()) @db.VarChar(36)
+  book_name    String   @db.VarChar(200)
+  category_id  String   @db.VarChar(36)
+  author_id    String   @db.VarChar(36)
+  publisher_id String   @db.VarChar(36)
+  created_at   DateTime
+  updated_at   DateTime
+
+  category Category @relation(fields: [category_id], references: [category_id])
+  author Author @relation(fields: [author_id], references: [author_id])
+  publisher Publisher @relation(fields: [publisher_id], references: [publisher_id])
 }
