@@ -1,6 +1,7 @@
 import { MyRequest, MyResponse } from "../../types/types";
 import * as Yup from 'yup'
 import { prismaInstance } from '../../utils/prisma';
+import { defaultResponseHeader } from "../../utils/responseUtils";
 
 const bodySchema = Yup.object({
     author_name: Yup.string().max(200).required(),
@@ -15,30 +16,24 @@ export async function createAuthorHandler(request: MyRequest, response: MyRespon
         })
         const body: Body = bodySchema.cast(request.myBody)
 
-        const newUser = await prismaInstance.author.create({
+        const newAuthor = await prismaInstance.author.create({
             data: {
                 author_name: body.author_name,
                 created_at: new Date(),
                 updated_at: new Date()
             }
         })
-        response.writeHead(201, {
-            "Content-Type": "application/json",
-        })
-        response.end(JSON.stringify(newUser))
+        response.writeHead(201, defaultResponseHeader)
+        response.end(JSON.stringify(newAuthor))
     } catch(e) {
         if(e instanceof Yup.ValidationError) {
-            response.writeHead(400, {
-                "Content-Type": "application/json",
-            })
+            response.writeHead(400, defaultResponseHeader)
             response.end(JSON.stringify({
                 error: e.errors
             }))
         } else {
             console.log(e)
-            response.writeHead(500, {
-                "Content-Type": "application/json",
-            })
+            response.writeHead(500, defaultResponseHeader)
             response.end(JSON.stringify({
                 error: "Internal server error"
             }))

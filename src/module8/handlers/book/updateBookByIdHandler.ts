@@ -3,6 +3,7 @@ import { MyRequest, MyResponse } from "../../types/types";
 import * as Yup from 'yup'
 import { prismaInstance } from "../../utils/prisma";
 import { requestUtils } from "../../utils/requestUtils";
+import { defaultResponseHeader } from "../../utils/responseUtils";
 
 const bodySchema = Yup.object({
     book_name: Yup.string().max(200).required(),
@@ -24,9 +25,7 @@ export async function updateBookByIdHandler(request: MyRequest, response: MyResp
         })
 
         if (!targetBook) {
-            response.writeHead(404, {
-                "Content-Type": "application/json",
-            })
+            response.writeHead(404, defaultResponseHeader)
             response.end(JSON.stringify({
                 error: 'Book not found'
             }))
@@ -46,9 +45,7 @@ export async function updateBookByIdHandler(request: MyRequest, response: MyResp
         })
 
         if (!category) {
-            response.writeHead(400, {
-                "Content-Type": "application/json",
-            })
+            response.writeHead(400, defaultResponseHeader)
             response.end(JSON.stringify({
                 error: 'Unknown category id.'
             }))
@@ -62,9 +59,7 @@ export async function updateBookByIdHandler(request: MyRequest, response: MyResp
         })
 
         if (!author) {
-            response.writeHead(400, {
-                "Content-Type": "application/json",
-            })
+            response.writeHead(400, defaultResponseHeader)
             response.end(JSON.stringify({
                 error: 'Unknown author id.'
             }))
@@ -78,9 +73,7 @@ export async function updateBookByIdHandler(request: MyRequest, response: MyResp
         })
 
         if (!publisher) {
-            response.writeHead(400, {
-                "Content-Type": "application/json",
-            })
+            response.writeHead(400, defaultResponseHeader)
             response.end(JSON.stringify({
                 error: 'Unknown publisher id.'
             }))
@@ -100,23 +93,17 @@ export async function updateBookByIdHandler(request: MyRequest, response: MyResp
             }
         })
 
-        response.writeHead(201, {
-            "Content-Type": "application/json",
-        })
+        response.writeHead(201, defaultResponseHeader)
         response.end(JSON.stringify(updatedBook))
     } catch (e) {
         if (e instanceof Yup.ValidationError) {
-            response.writeHead(400, {
-                "Content-Type": "application/json",
-            })
+            response.writeHead(400, defaultResponseHeader)
             response.end(JSON.stringify({
                 error: e.errors
             }))
         } else {
             console.log(e)
-            response.writeHead(500, {
-                "Content-Type": "application/json",
-            })
+            response.writeHead(500, defaultResponseHeader)
             response.end(JSON.stringify({
                 error: "Internal server error"
             }))

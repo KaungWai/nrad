@@ -1,6 +1,7 @@
 import { MyRequest, MyResponse } from "../../types/types";
 import { requestUtils } from '../../utils/requestUtils';
 import { prismaInstance } from '../../utils/prisma';
+import { defaultResponseHeader } from "../../utils/responseUtils";
 
 export async function deleteBookByIdHandler(request: MyRequest, response: MyResponse) {
     try {
@@ -14,9 +15,7 @@ export async function deleteBookByIdHandler(request: MyRequest, response: MyResp
         })
 
         if (!book) {
-            response.writeHead(404, {
-                "Content-Type": "application/json",
-            })
+            response.writeHead(404, defaultResponseHeader)
             response.end(JSON.stringify({
                 error: "author not found"
             }))
@@ -33,9 +32,7 @@ export async function deleteBookByIdHandler(request: MyRequest, response: MyResp
         response.end()
     } catch (e) {
         console.log(e)
-        response.writeHead(500, {
-            "Content-Type": "application/json",
-        })
+        response.writeHead(500, defaultResponseHeader)
         response.end(JSON.stringify({
             error: "Internal server error"
         }))

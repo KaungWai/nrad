@@ -1,6 +1,7 @@
 import { MyRequest, MyResponse } from "../../types/types";
 import { prismaInstance } from "../../utils/prisma";
 import { requestUtils } from "../../utils/requestUtils";
+import { defaultResponseHeader } from "../../utils/responseUtils";
 
 export async function getBookByIdHandler(request: MyRequest, response: MyResponse) {
     const urlObj = requestUtils.getURLObject(request)
@@ -37,18 +38,13 @@ export async function getBookByIdHandler(request: MyRequest, response: MyRespons
     })
 
     if (!book) {
-        response.writeHead(404, {
-            "Content-Type": "application/json",
-        })
+        response.writeHead(404, defaultResponseHeader)
         response.end(JSON.stringify({
             error: 'Book not found.'
         }))
         return
     }
 
-    response.writeHead(200, {
-        "Content-Type": "application/json",
-    })
-
+    response.writeHead(200, defaultResponseHeader)
     response.end(JSON.stringify(book))
 }

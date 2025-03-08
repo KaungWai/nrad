@@ -4,6 +4,7 @@ import { defaultHandler } from './handlers/defaultHandler';
 import { config } from 'dotenv'
 import { requestUtils } from './utils/requestUtils';
 import { MyRequest, MyResponse } from './types/types';
+import { defaultResponseHeader } from './utils/responseUtils';
 
 config()
 
@@ -26,12 +27,15 @@ server.on('request', (request: MyRequest, response: MyResponse) => {
         const handlers:any = router(urlObj)
 
         if (!handlers) {
+            console.log(`${request.method} ${request.url} > ${defaultHandler.name}`)
             defaultHandler(request, response)
         } else {
             const targetHandler = handlers[request.method ?? '']
             if (targetHandler) {
+                console.log(`${request.method} ${request.url} > ${targetHandler.name}`)
                 targetHandler(request, response)
             } else {
+                console.log(`${request.method} ${request.url} > ${defaultHandler.name}`)
                 defaultHandler(request, response)
             }
         }

@@ -3,6 +3,7 @@ import * as Yup from 'yup';
 import { prismaInstance } from "../../utils/prisma";
 import { queryUtils } from "../../utils/queryUtil";
 import { requestUtils } from "../../utils/requestUtils";
+import { defaultResponseHeader } from "../../utils/responseUtils";
 
 const querySchema = Yup.object({
     filter: Yup.object({
@@ -27,7 +28,10 @@ export async function getBooksHandler(request: MyRequest, response: MyResponse) 
         const urlObj = requestUtils.getURLObject(request)
         const queryDecoded = queryUtils.decodeQuery(urlObj);
 
-        await querySchema.validate(queryDecoded)
+        await querySchema.validate(queryDecoded, {
+            abortEarly: false,
+            strict: false
+        })
         const query = querySchema.cast(queryDecoded)
 
         const books = await prismaInstance.book.findMany({
@@ -74,24 +78,17 @@ export async function getBooksHandler(request: MyRequest, response: MyResponse) 
             take: query.take
         })
 
-        response.writeHead(200, {
-            "Content-Type": "application/json",
-        })
-        const responseData = { book: books }
-        response.end(JSON.stringify(responseData))
+        response.writeHead(200, defaultResponseHeader)
+        response.end(JSON.stringify(books))
     } catch (e) {
         if (e instanceof Yup.ValidationError) {
-            response.writeHead(400, {
-                "Content-Type": "application/json",
-            })
+            response.writeHead(400, defaultResponseHeader)
             response.end(JSON.stringify({
                 error: e.errors
             }))
         } else {
             console.log(e)
-            response.writeHead(500, {
-                "Content-Type": "application/json",
-            })
+            response.writeHead(500, defaultResponseHeader)
             response.end(JSON.stringify({
                 error: "Internal server error"
             }))

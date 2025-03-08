@@ -1,5 +1,6 @@
 import { createAuthorHandler } from "./handlers/author/createAuthorHandler"
 import { deleteAuthorByIdHandler } from "./handlers/author/deleteAuthorByIdHandler"
+import { getAuthorByIdHandler } from "./handlers/author/getAuthorByIdHandler"
 import { getAuthorsHandler } from "./handlers/author/getAuthorsHandler"
 import { updateAuthorByIdHandler } from "./handlers/author/updateAuthorByIdHandler"
 import { createBookHandler } from "./handlers/book/createBookHandler"
@@ -14,6 +15,7 @@ import { getCategoryByIdHandler } from "./handlers/category/getCategoryByIdHandl
 import { updateCategoryByIdHandler } from "./handlers/category/updateCategoryByIdHandler"
 import { createPublisherHandler } from "./handlers/publisher/createPublisherHandler"
 import { deletePublisherByIdHandler } from "./handlers/publisher/deletePublisherByIdHandler"
+import { getPublisherByIdHandler } from "./handlers/publisher/getPublisherByIdHandler"
 import { getPublishersHandler } from "./handlers/publisher/getPublishersHandler"
 import { updatePublisherByIdHandler } from "./handlers/publisher/updatePublisherByIdHandler"
 import { rootHandler } from "./handlers/rootHandler"
@@ -37,6 +39,7 @@ const routes = {
         POST: createAuthorHandler,
     },
     "/authors/:author_id": {
+        GET: getAuthorByIdHandler,
         PATCH: updateAuthorByIdHandler,
         DELETE: deleteAuthorByIdHandler,
     },
@@ -44,7 +47,8 @@ const routes = {
         GET: getPublishersHandler,
         POST: createPublisherHandler,
     },
-    "/publishers/:author_id": {
+    "/publishers/:publisher_id": {
+        GET: getPublisherByIdHandler,
         PATCH: updatePublisherByIdHandler,
         DELETE: deletePublisherByIdHandler,
     },

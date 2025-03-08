@@ -1,21 +1,27 @@
 import { MyRequest, MyResponse } from "../../types/types";
-import { prismaInstance } from "../../utils/prisma";
 import * as Yup from "yup";
+import { prismaInstance } from "../../utils/prisma";
 import { defaultResponseHeader } from "../../utils/responseUtils";
+import { requestUtils } from "../../utils/requestUtils";
 
-export async function getAuthorsHandler(
+export async function getPublisherByIdHandler(
   request: MyRequest,
   response: MyResponse
 ) {
   try {
-    const authors = await prismaInstance.author.findMany({
-      orderBy: {
-        author_name: "asc",
+    const urlObj = requestUtils.getURLObject(request);
+    const publisherId = urlObj.pathname
+      .split("/")
+      .filter((x) => x.trim() !== "")[1];
+
+    const publisher = await prismaInstance.publisher.findUnique({
+      where: {
+        publisher_id: publisherId,
       },
     });
 
     response.writeHead(200, defaultResponseHeader);
-    response.end(JSON.stringify(authors));
+    response.end(JSON.stringify(publisher));
   } catch (e) {
     if (e instanceof Yup.ValidationError) {
       response.writeHead(400, defaultResponseHeader);

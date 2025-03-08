@@ -1,6 +1,7 @@
 import { MyRequest, MyResponse } from "../../types/types";
 import * as Yup from 'yup'
 import { prismaInstance } from "../../utils/prisma";
+import { defaultResponseHeader } from "../../utils/responseUtils";
 
 
 const publisherSchema = Yup.object({
@@ -24,23 +25,17 @@ export async function createPublisherHandler(request: MyRequest, response: MyRes
                 updated_at: new Date(),
             }
         });
-        response.writeHead(201, {
-            "Content-Type": "application/json",
-        })
+        response.writeHead(201, defaultResponseHeader)
         response.end(JSON.stringify(createPublisher));
     } catch (error) {
         if (error instanceof Yup.ValidationError) {
-            response.writeHead(401, {
-                "Content-Type": "application/json",
-            })
+            response.writeHead(400, defaultResponseHeader)
             response.end(JSON.stringify({
                 error: error.errors
             }))
         } else {
             console.log(error)
-            response.writeHead(500, {
-                "Content-Type": "application/json",
-            })
+            response.writeHead(500, defaultResponseHeader)
             response.end(JSON.stringify({
                 error: "Internal Server Error"
             }))

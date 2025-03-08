@@ -2,6 +2,7 @@ import { MyRequest, MyResponse } from "../../types/types";
 import * as Yup from 'yup'
 import { prismaInstance } from '../../utils/prisma';
 import { requestUtils } from "../../utils/requestUtils";
+import { defaultResponseHeader } from "../../utils/responseUtils";
 
 const bodySchema = Yup.object({
     author_name: Yup.string().max(200).required(),
@@ -21,9 +22,7 @@ export async function updateAuthorByIdHandler(request: MyRequest, response: MyRe
         })
 
         if(!targetAuthor) {
-            response.writeHead(404, {
-                "Content-Type": "application/json",
-            })
+            response.writeHead(404, defaultResponseHeader)
             response.end(JSON.stringify({
                 error: 'Author not found'
             }))
@@ -45,23 +44,17 @@ export async function updateAuthorByIdHandler(request: MyRequest, response: MyRe
             }
         })
 
-        response.writeHead(201, {
-            "Content-Type": "application/json",
-        })
+        response.writeHead(201, defaultResponseHeader)
         response.end(JSON.stringify(upatedAunthor))
     } catch (e) {
         if (e instanceof Yup.ValidationError) {
-            response.writeHead(400, {
-                "Content-Type": "application/json",
-            })
+            response.writeHead(400, defaultResponseHeader)
             response.end(JSON.stringify({
                 error: e.errors
             }))
         } else {
             console.log(e)
-            response.writeHead(500, {
-                "Content-Type": "application/json",
-            })
+            response.writeHead(500, defaultResponseHeader)
             response.end(JSON.stringify({
                 error: "Internal server error"
             }))
