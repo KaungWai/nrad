@@ -51,74 +51,57 @@ init()
     </div>
 
     <table class="table m-0 mt-3">
-      <thead>
-        <tr>
-          <th>Book Id</th>
-          <th>Book Name</th>
-          <th></th>
-          <th></th>
-        </tr>
-      </thead>
       <tbody>
         <tr>
           <td>
+            Book Id
+            <br>
             <input class="form-control form-control-sm" type="text" placeholder="(auto)" disabled />
           </td>
           <td>
+            Book Name
+            <br>
             <input class="form-control form-control-sm" type="text" v-model="form.book_name" />
           </td>
           <td></td>
-          <td></td>
         </tr>
-      </tbody>
-      <thead>
-        <tr>
-          <th>Category</th>
-          <th>Author</th>
-          <th>Publisher</th>
-          <th></th>
-        </tr>
-      </thead>
-      <tbody>
         <tr>
           <td>
+            Category
+            <br>
             <select class="form-select" v-model="form.category_id">
               <option selected value="">--select--</option>
               <option v-for="c in categories" :value="c.category_id" :key="c.category_id">{{ c.category_name }}</option>
             </select>
           </td>
           <td>
+            Author
+            <br>
             <select class="form-select" v-model="form.author_id">
               <option selected value="">--select--</option>
               <option v-for="a in authors" :value="a.author_id" :key="a.author_id">{{ a.author_name }}</option>
             </select>
           </td>
           <td>
+            Publisher
+            <br>
             <select class="form-select" v-model="form.publisher_id">
               <option selected value="">--select--</option>
               <option v-for="p in publishers" :value="p.publisher_id" :key="p.publisher_id">{{ p.publisher_name }}</option>
             </select>
           </td>
-          <td></td>
         </tr>
-      </tbody>
-      <thead>
-        <tr>
-          <th>Created At</th>
-          <th>Updated Name</th>
-          <th></th>
-          <th></th>
-        </tr>
-      </thead>
-      <tbody>
         <tr>
           <td>
+            Created At
+            <br>
             <input class="form-control form-control-sm" type="text" placeholder="(auto)" disabled />
           </td>
           <td>
+            Updated Name
+            <br>
             <input class="form-control form-control-sm" type="text" placeholder="(auto)" disabled />
           </td>
-          <td></td>
           <td></td>
         </tr>
       </tbody>

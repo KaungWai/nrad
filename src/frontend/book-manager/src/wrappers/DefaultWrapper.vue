@@ -12,5 +12,8 @@ const props = defineProps<{
         <div class="bg-light p-3">
             <slot></slot>
         </div>
+        <div class="mt-3 text-center">
+            NodeJS REST API Development
+        </div>
     </div>
 </template>

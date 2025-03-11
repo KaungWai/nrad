@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { API, type Author, type Book, type Category, type Publisher } from '@/api/api'
+import router from '@/router'
 import DefaultWrapper from '@/wrappers/DefaultWrapper.vue'
 import { ref } from 'vue'
 import { RouterLink, useRoute } from 'vue-router'
@@ -68,6 +69,13 @@ const save = async () => {
   }
 }
 
+const deletE = async () => {
+  const response = await API.book.deleteBook(form.value.book_id)
+  if (response.ok) {
+    router.push('/books')
+  }
+}
+
 init()
 </script>
 
@@ -75,78 +83,64 @@ init()
   <DefaultWrapper :title="'Edit Book'">
     <div class="border-bottom pb-3 d-flex justify-content-between">
       <button class="btn btn-sm btn-primary" @click="save">Save</button>
-      <RouterLink class="btn btn-sm btn-secondary" to="/books">Back</RouterLink>
+      <span>
+        <button class="btn btn-sm btn-danger me-3" @click="deletE">Delete</button>
+        <RouterLink class="btn btn-sm btn-secondary" to="/books">Back</RouterLink>
+      </span>
     </div>
 
     <table class="table m-0 mt-3">
-      <thead>
-        <tr>
-          <th>Book Id</th>
-          <th>Book Name</th>
-          <th></th>
-          <th></th>
-        </tr>
-      </thead>
       <tbody>
         <tr>
           <td>
+            Book Id
+            <br>
             <input class="form-control form-control-sm" type="text" v-model="form.book_id" readonly />
           </td>
           <td>
+            Book Name
+            <br>
             <input class="form-control form-control-sm" type="text" v-model="form.book_name" />
           </td>
           <td></td>
-          <td></td>
         </tr>
-      </tbody>
-      <thead>
-        <tr>
-          <th>Category</th>
-          <th>Author</th>
-          <th>Publisher</th>
-          <th></th>
-        </tr>
-      </thead>
-      <tbody>
         <tr>
           <td>
+            Category
+            <br>
             <select class="form-select" v-model="form.category.category_id">
               <option selected value="">--select--</option>
               <option v-for="c in categories" :value="c.category_id" :key="c.category_id">{{ c.category_name }}</option>
             </select>
           </td>
           <td>
+            Author
+            <br>
             <select class="form-select" v-model="form.author.author_id">
               <option selected value="">--select--</option>
               <option v-for="a in authors" :value="a.author_id" :key="a.author_id">{{ a.author_name }}</option>
             </select>
           </td>
           <td>
+            Publisher
+            <br>
             <select class="form-select" v-model="form.publisher.publisher_id">
               <option selected value="">--select--</option>
               <option v-for="p in publishers" :value="p.publisher_id" :key="p.publisher_id">{{ p.publisher_name }}</option>
             </select>
           </td>
-          <td></td>
         </tr>
-      </tbody>
-      <thead>
-        <tr>
-          <th>Created At</th>
-          <th>Updated Name</th>
-          <th></th>
-          <th></th>
-        </tr>
-      </thead>
-      <tbody>
         <tr>
           <td>
+            Created At
+            <br>
             <input class="form-control form-control-sm" type="text" v-model="form.created_at" readonly />
           </td>
           <td>
+            Updated Name
+            <br>
             <input class="form-control form-control-sm" type="text" v-model="form.updated_at" readonly />
           </td>
-          <td></td>
           <td></td>
         </tr>
       </tbody>

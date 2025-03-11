@@ -5,7 +5,7 @@ import { RouterLink, RouterView } from 'vue-router'
 <template>
   <nav class="navbar bg-body-tertiary border-bottom">
     <div class="container">
-      <span class="navbar-brand mb-0 h1">The Book Manager - REST API development mini project</span>
+      <span class="navbar-brand mb-0 h1">Book Manager - Mini Project</span>
     </div>
   </nav>
   <div class="container">
@@ -30,10 +30,16 @@ import { RouterLink, RouterView } from 'vue-router'
         </ul>
       </div>
       <div class="col border-start p-3" style="height: calc(100vh - 42px)">
-        <RouterView />
+        <Transition>
+          <RouterView />
+        </Transition>
       </div>
     </div>
   </div>
 </template>
 
-<style scoped></style>
+<style scoped>
+.list-group-item:hover {
+  background-color: rgb(226, 227, 229);
+}
+</style>

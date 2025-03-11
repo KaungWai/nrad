@@ -11,6 +11,7 @@ const CONTENT_TYPE = {
     '.css': "text/css",
     '.js': "text/javascript",
     '.json': "application/json",
+    '.ico': "image/x-icon",
     '.png': "image/png",
     '.jpg': "image/jpeg",
     '.gif': "image/gif",

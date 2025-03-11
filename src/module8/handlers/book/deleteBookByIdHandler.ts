@@ -28,7 +28,7 @@ export async function deleteBookByIdHandler(request: MyRequest, response: MyResp
             }
         })
 
-        response.writeHead(204)
+        response.writeHead(204, defaultResponseHeader)
         response.end()
     } catch (e) {
         console.log(e)

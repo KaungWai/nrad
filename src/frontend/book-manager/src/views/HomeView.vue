@@ -22,21 +22,21 @@ init()
 
 <template>
   <DefaultWrapper :title="'Home'">
-    <table class="table">
+    <table class="table m-0">
       <thead>
         <tr>
-          <th>Books</th>
-          <th>Categories</th>
-          <th>Authors</th>
-          <th>Publishers</th>
+          <th class="text-center">Books</th>
+          <th class="text-center">Categories</th>
+          <th class="text-center">Authors</th>
+          <th class="text-center">Publishers</th>
         </tr>
       </thead>
       <tbody>
         <tr>
-          <td>{{ stats.book }}</td>
-          <td>{{ stats.category }}</td>
-          <td>{{ stats.author }}</td>
-          <td>{{ stats.publisher }}</td>
+          <td class="text-center">{{ stats.book }}</td>
+          <td class="text-center">{{ stats.category }}</td>
+          <td class="text-center">{{ stats.author }}</td>
+          <td class="text-center">{{ stats.publisher }}</td>
         </tr>
       </tbody>
     </table>
