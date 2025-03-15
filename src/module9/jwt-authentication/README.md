@@ -12,15 +12,15 @@ npm install
 ```
 
 ### create env file
-`module9\jwt-authentication` folder ထဲမှာ `.env` file ဆောက်ပါ 
-အထဲမှာ ဘာထည့်ရမလဲက `.env.example` file ကို နမူနာကြည့်လို့ရပါတယ် 
+- `module9\jwt-authentication` folder ထဲမှာ `.env` file ဆောက်ပါ 
+- အထဲမှာ ဘာထည့်ရမလဲက `.env.example` file ကို နမူနာကြည့်လို့ရပါတယ် 
 
 ### ssl setup
-`module9\jwt-authentication` folder ထဲမှာ `certificates` folder ဆောက်ပါ 
-ဒီ link ကို သွားပြီး software ကို download ဆွဲပါ https://apps.microsoft.com/detail/9PF4X1JG1D94
-software ကို အသုံးပြုပြီး self-signed certificate ထုတ်ပါ
-ရလာတဲ့ zip ထဲက file 2 file ကို `certificates` folder ထဲမှာ ထည့်ပါ
-file တွေကို localhost.crt နဲ့ localhost.key ဆိုပြီး rename လုပ်ပါ
+- `module9\jwt-authentication` folder ထဲမှာ `certificates` folder ဆောက်ပါ
+- ဒီ link ကို သွားပြီး software ကို download ဆွဲပါ https://apps.microsoft.com/detail/9PF4X1JG1D94
+- software ကို အသုံးပြုပြီး self-signed certificate ထုတ်ပါ
+- ရလာတဲ့ zip ထဲက file 2 file ကို `certificates` folder ထဲမှာ ထည့်ပါ
+- file တွေကို localhost.crt နဲ့ localhost.key ဆိုပြီး rename လုပ်ပါ
 ```shell
 module9
 |_ jwt-authtication
