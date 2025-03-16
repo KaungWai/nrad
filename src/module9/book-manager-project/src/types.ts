@@ -1,0 +1,18 @@
+import { Request, Response } from 'express'
+
+export type HandlerResult = {
+  statusCode: number
+  body?: any
+}
+
+export class HandlerError extends Error {
+  statusCode: number
+  errors: string[]
+  constructor(statusCode: number, errors: string[]) {
+    super(errors.join(','))
+    this.statusCode = statusCode
+    this.errors = errors
+  }
+}
+
+export type Handler = (request: Request, response: Response) => Promise<HandlerResult>

@@ -1,0 +1,79 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  user_id    String   @id @default(uuid()) @db.VarChar(36)
+  user_name  String   @db.VarChar(50)
+  role       Role
+  hash       String   @db.VarChar(60)
+  created_at DateTime
+  updated_at DateTime
+
+  @@index([user_name])
+}
+
+model Category {
+  category_id   String   @id @default(uuid()) @db.VarChar(36)
+  category_name String   @db.VarChar(200)
+  created_at    DateTime
+  updated_at    DateTime
+
+  book Book[]
+}
+
+model Author {
+  author_id   String   @id @default(uuid()) @db.VarChar(36)
+  author_name String   @db.VarChar(200)
+  gender      Gender
+  birth_date  DateTime
+  created_at  DateTime
+  updated_at  DateTime
+
+  book Book[]
+}
+
+model Publisher {
+  publisher_id   String   @id @default(uuid()) @db.VarChar(36)
+  publisher_name String   @db.VarChar(200)
+  created_at     DateTime
+  updated_at     DateTime
+
+  book Book[]
+}
+
+model Book {
+  book_id        String   @id @default(uuid()) @db.VarChar(36)
+  book_name      String   @db.VarChar(200)
+  published_date DateTime
+  category_id    String   @db.VarChar(36)
+  author_id      String   @db.VarChar(36)
+  publisher_id   String   @db.VarChar(36)
+  created_at     DateTime
+  updated_at     DateTime
+
+  category  Category  @relation(fields: [category_id], references: [category_id])
+  author    Author    @relation(fields: [author_id], references: [author_id])
+  publisher Publisher @relation(fields: [publisher_id], references: [publisher_id])
+}
+
+enum Role {
+  ADMIN
+  USER
+}
+
+enum Gender {
+  MALE
+  FEMALE
+}
