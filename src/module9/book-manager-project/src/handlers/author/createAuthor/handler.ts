@@ -14,7 +14,7 @@ export const createAuthorHandler: Handler = async (request, response) => {
     data: {
       author_name: body.author_name,
       gender: body.gender,
-      birth_date: body.birth_date,
+      birth_date: new Date(body.birth_date),
       created_at: new Date(),
       updated_at: new Date(),
     },

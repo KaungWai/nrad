@@ -16,3 +16,5 @@ export class HandlerError extends Error {
 }
 
 export type Handler = (request: Request, response: Response) => Promise<HandlerResult>
+
+export type Sorting = 'asc' | 'desc' | undefined
