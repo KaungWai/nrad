@@ -15,6 +15,7 @@ import { updatePublisherByIdHandler } from './handlers/publisher/updatePublisher
 import { createCategoryHandler } from './handlers/category/createCategory/handler'
 import { deleteCategoryById } from './handlers/category/deleteCategoryById/handler'
 import { getCategoryById } from './handlers/category/getCategoryById/handler'
+import { getCategorysHandler } from './handlers/category/getCategorys/handler'
 import { updateCategoryByIdHandler } from './handlers/category/updateCategoryById/handler'
 
 function convertHanlder(handler: Handler) {
@@ -69,6 +70,7 @@ router.patch('/publishers/:publisher_id', convertHanlder(updatePublisherByIdHand
 router.post('/categorys', convertHanlder(createCategoryHandler))
 router.delete('/categorys/:category_id', convertHanlder(deleteCategoryById))
 router.get('/categorys/:category_id', convertHanlder(getCategoryById))
+router.get('/categorys', convertHanlder(getCategorysHandler))
 router.patch('/categorys/:category_id', convertHanlder(updateCategoryByIdHandler))
 
 export default router
