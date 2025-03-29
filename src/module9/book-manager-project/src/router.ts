@@ -7,6 +7,10 @@ import { createAuthorHandler } from './handlers/author/createAuthor/handler'
 import { deleteAuthorById } from './handlers/author/deleteAuthorById/handler'
 import { getAuthorById } from './handlers/author/getAuthorById/handler'
 import { updateAuthorByIdHandler } from './handlers/author/updateAuthorById/handler'
+import { createPublisherHandler } from './handlers/publisher/createPublisher/handler'
+import { deletePublisherById } from './handlers/publisher/deletePublisherById/handler'
+import { getPublisherById } from './handlers/publisher/getPublisherById/handler'
+import { updatePublisherByIdHandler } from './handlers/publisher/updatePublisherById/handler'
 import { getAuthorsHandler } from './handlers/author/getAuthors/handler'
 
 function convertHanlder(handler: Handler) {
@@ -50,5 +54,11 @@ router.delete('/authors/:author_id', convertHanlder(deleteAuthorById))
 router.get('/authors/:author_id', convertHanlder(getAuthorById))
 router.get('/authors', convertHanlder(getAuthorsHandler))
 router.patch('/authors/:author_id', convertHanlder(updateAuthorByIdHandler))
+
+// publisher
+router.post('/publishers', convertHanlder(createPublisherHandler))
+router.delete('/publishers/:publisher_id', convertHanlder(deletePublisherById))
+router.get('/publishers/:publisher_id', convertHanlder(getPublisherById))
+router.patch('/publishers/:publisher_id', convertHanlder(updatePublisherByIdHandler))
 
 export default router
