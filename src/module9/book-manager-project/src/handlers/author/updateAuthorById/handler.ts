@@ -29,7 +29,7 @@ export const updateAuthorByIdHandler: Handler = async (request, response) => {
     data: {
       author_name: body.author_name,
       gender: body.gender,
-      birth_date: body.birth_date,
+      birth_date: new Date(body.birth_date),
       updated_at: new Date(),
     },
   })

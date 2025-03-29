@@ -7,6 +7,7 @@ import { createAuthorHandler } from './handlers/author/createAuthor/handler'
 import { deleteAuthorById } from './handlers/author/deleteAuthorById/handler'
 import { getAuthorById } from './handlers/author/getAuthorById/handler'
 import { updateAuthorByIdHandler } from './handlers/author/updateAuthorById/handler'
+import { getAuthorsHandler } from './handlers/author/getAuthors/handler'
 
 function convertHanlder(handler: Handler) {
   return async (request: Request, response: Response) => {
@@ -47,6 +48,7 @@ router.post('/auth/logout', convertHanlder(logoutHandler))
 router.post('/authors', convertHanlder(createAuthorHandler))
 router.delete('/authors/:author_id', convertHanlder(deleteAuthorById))
 router.get('/authors/:author_id', convertHanlder(getAuthorById))
+router.get('/authors', convertHanlder(getAuthorsHandler))
 router.patch('/authors/:author_id', convertHanlder(updateAuthorByIdHandler))
 
 export default router
