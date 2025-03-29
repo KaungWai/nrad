@@ -6,6 +6,7 @@ import { Handler, HandlerError } from './types'
 import { createAuthorHandler } from './handlers/author/createAuthor/handler'
 import { deleteAuthorById } from './handlers/author/deleteAuthorById/handler'
 import { getAuthorById } from './handlers/author/getAuthorById/handler'
+import { getAuthorsHandler } from './handlers/author/getAuthors/handler'
 import { updateAuthorByIdHandler } from './handlers/author/updateAuthorById/handler'
 import { createPublisherHandler } from './handlers/publisher/createPublisher/handler'
 import { deletePublisherById } from './handlers/publisher/deletePublisherById/handler'
@@ -55,6 +56,7 @@ router.post('/auth/logout', convertHanlder(logoutHandler))
 router.post('/authors', convertHanlder(createAuthorHandler))
 router.delete('/authors/:author_id', convertHanlder(deleteAuthorById))
 router.get('/authors/:author_id', convertHanlder(getAuthorById))
+router.get('/authors', convertHanlder(getAuthorsHandler))
 router.patch('/authors/:author_id', convertHanlder(updateAuthorByIdHandler))
 
 // publisher
