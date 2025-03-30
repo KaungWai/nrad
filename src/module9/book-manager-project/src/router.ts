@@ -20,6 +20,7 @@ import { updateAuthorByIdHandler } from './handlers/author/updateAuthorById/hand
 import { createPublisherHandler } from './handlers/publisher/createPublisher/handler'
 import { deletePublisherById } from './handlers/publisher/deletePublisherById/handler'
 import { getPublisherById } from './handlers/publisher/getPublisherById/handler'
+import { getPublishersHandler } from './handlers/publisher/getPublishers/handler'
 import { updatePublisherByIdHandler } from './handlers/publisher/updatePublisherById/handler'
 // category
 import { createCategoryHandler } from './handlers/category/createCategory/handler'
@@ -79,6 +80,7 @@ router.patch('/authors/:author_id', convertHanlder(updateAuthorByIdHandler))
 router.post('/publishers', convertHanlder(createPublisherHandler))
 router.delete('/publishers/:publisher_id', convertHanlder(deletePublisherById))
 router.get('/publishers/:publisher_id', convertHanlder(getPublisherById))
+router.get('/publishers', convertHanlder(getPublishersHandler))
 router.patch('/publishers/:publisher_id', convertHanlder(updatePublisherByIdHandler))
 // category
 router.post('/categorys', convertHanlder(createCategoryHandler))
