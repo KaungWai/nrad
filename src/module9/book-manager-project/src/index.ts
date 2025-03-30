@@ -1,6 +1,8 @@
 import https from 'node:https'
 import { readFileSync } from 'node:fs'
 import path from 'node:path'
+import cors from 'cors'
+import cookieParser from 'cookie-parser'
 import { config } from 'dotenv'
 import express from 'express'
 import PinoHttp from 'pino-http'
@@ -20,6 +22,13 @@ const app = express()
 const port = process.env.PORT ?? 8080
 const environment = process.env.ENVIRONMENT
 
+if (environment == 'development') {
+  app.use(cors({
+    origin: 'http://localhost:5173',
+    credentials: true
+  }))
+}
+app.use(cookieParser())
 app.use(express.json())
 app.use(logger)
 app.use(router)

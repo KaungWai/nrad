@@ -1,9 +1,7 @@
-import { Request, Response } from 'express'
 import status from 'http-status'
 import { loginRequestBodySchema } from './requestBody'
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
-import * as Yup from 'yup'
 import { Handler, HandlerError } from '../../../types'
 import { prismaInstance } from '../../../utils/prismaUtil'
 
@@ -51,10 +49,11 @@ export const loginHandler: Handler = async (request, response) => {
   response.cookie('access_token', accessToken, {
     httpOnly: true,
     secure: true,
-    sameSite: true,
+    sameSite: process.env.ENVIRONMENT === 'development' ? 'none' : 'strict',
   })
 
   return {
     statusCode: status.OK,
+    body: payload,
   }
 }

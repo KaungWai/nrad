@@ -2,6 +2,7 @@ import express, { Request, Response } from 'express'
 import * as Yup from 'yup'
 import { Handler, HandlerError } from './types'
 // auth
+import { auth } from './auth'
 import { loginHandler } from './handlers/auth/login/handler'
 import { logoutHandler } from './handlers/auth/logout/handler'
 // user
@@ -45,6 +46,7 @@ function convertHanlder(handler: Handler) {
         })
         return
       } else if (e instanceof Yup.ValidationError) {
+        console.log(e.errors)
         response.status(400).send({
           errors: e.errors,
         })
@@ -65,17 +67,17 @@ const router = express.Router()
 router.post('/auth/login', convertHanlder(loginHandler))
 router.post('/auth/logout', convertHanlder(logoutHandler))
 // user
-router.post('/users', convertHanlder(createUserHandler))
-router.delete('/user/:user_id', convertHanlder(deleteUserById))
-router.get('/users/:user_id', convertHanlder(getUserById))
-router.get('/users', convertHanlder(getUsersHandler))
-router.patch('/user/:user_id', convertHanlder(updateUserHandler))
+router.post('/users', auth(['ADMIN']), convertHanlder(createUserHandler))
+router.delete('/user/:user_id', auth(['ADMIN']), convertHanlder(deleteUserById))
+router.get('/users/:user_id', auth(['ADMIN', 'USER']), convertHanlder(getUserById))
+router.get('/users', auth(['ADMIN', 'USER']), convertHanlder(getUsersHandler))
+router.patch('/user/:user_id', auth(['ADMIN']), convertHanlder(updateUserHandler))
 // author
-router.post('/authors', convertHanlder(createAuthorHandler))
-router.delete('/authors/:author_id', convertHanlder(deleteAuthorById))
-router.get('/authors/:author_id', convertHanlder(getAuthorById))
-router.get('/authors', convertHanlder(getAuthorsHandler))
-router.patch('/authors/:author_id', convertHanlder(updateAuthorByIdHandler))
+router.post('/authors', auth(['ADMIN', 'USER']), convertHanlder(createAuthorHandler))
+router.delete('/authors/:author_id', auth(['ADMIN', 'USER']), convertHanlder(deleteAuthorById))
+router.get('/authors/:author_id', auth(['ADMIN', 'USER']), convertHanlder(getAuthorById))
+router.get('/authors', auth(['ADMIN', 'USER']), convertHanlder(getAuthorsHandler))
+router.patch('/authors/:author_id', auth(['ADMIN', 'USER']), convertHanlder(updateAuthorByIdHandler))
 // publisher
 router.post('/publishers', convertHanlder(createPublisherHandler))
 router.delete('/publishers/:publisher_id', convertHanlder(deletePublisherById))
