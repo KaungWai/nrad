@@ -1,6 +1,6 @@
 import bcrypt from 'bcrypt'
 import status from 'http-status'
-import { Handler } from '../../../types'
+import { Handler, HandlerError } from '../../../types'
 import { createUserRequestBodySchema } from './requestBody'
 import { prismaInstance } from '../../../utils/prismaUtil'
 
@@ -11,6 +11,16 @@ export const createUserHandler: Handler = async (request, response) => {
 
   const body = createUserRequestBodySchema.cast(request.body)
 
+  const checkUsername = await prismaInstance.user.findFirst({
+    where: {
+      user_name: body.user_name
+    }
+  })
+
+  if (checkUsername) {
+    throw new HandlerError(status.BAD_REQUEST, [`User name is already taken`])
+  }
+ 
   const newUser = await prismaInstance.user.create({
     data: {
       user_name: body.user_name,

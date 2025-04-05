@@ -9,6 +9,13 @@ export const getUserById: Handler = async (request, response) => {
     where: {
       user_id: userId,
     },
+    select: {
+      user_id: true,
+      user_name: true,
+      role: true,
+      created_at: true,
+      updated_at: true,
+    },
   })
 
   if (!targetUser) {

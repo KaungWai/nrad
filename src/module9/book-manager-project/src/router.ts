@@ -5,6 +5,9 @@ import { Handler, HandlerError } from './types'
 import { auth } from './auth'
 import { loginHandler } from './handlers/auth/login/handler'
 import { logoutHandler } from './handlers/auth/logout/handler'
+import { getAuthUserHandler } from './handlers/auth/getAuthUser/handler'
+// stats
+import { getStatsHandler } from './handlers/stats/getStats/handler'
 // user
 import { createUserHandler } from './handlers/user/createUser/handler'
 import { deleteUserById } from './handlers/user/deleteUserById/handler'
@@ -71,12 +74,15 @@ const router = express.Router()
 // auth
 router.post('/auth/login', convertHanlder(loginHandler))
 router.post('/auth/logout', convertHanlder(logoutHandler))
+router.get('/auth/user', auth(['ADMIN', 'USER']), convertHanlder(getAuthUserHandler))
+// stats
+router.get('/stats', auth(['ADMIN', 'USER']), convertHanlder(getStatsHandler))
 // user
 router.post('/users', auth(['ADMIN']), convertHanlder(createUserHandler))
-router.delete('/user/:user_id', auth(['ADMIN']), convertHanlder(deleteUserById))
-router.get('/users/:user_id', auth(['ADMIN', 'USER']), convertHanlder(getUserById))
-router.get('/users', auth(['ADMIN', 'USER']), convertHanlder(getUsersHandler))
-router.patch('/user/:user_id', auth(['ADMIN']), convertHanlder(updateUserHandler))
+router.delete('/users/:user_id', auth(['ADMIN']), convertHanlder(deleteUserById))
+router.get('/users/:user_id', auth(['ADMIN']), convertHanlder(getUserById))
+router.get('/users', auth(['ADMIN']), convertHanlder(getUsersHandler))
+router.patch('/users/:user_id', auth(['ADMIN', 'USER']), convertHanlder(updateUserHandler))
 // author
 router.post('/authors', auth(['ADMIN', 'USER']), convertHanlder(createAuthorHandler))
 router.delete('/authors/:author_id', auth(['ADMIN', 'USER']), convertHanlder(deleteAuthorById))
@@ -101,6 +107,5 @@ router.delete('/books/:book_id', convertHanlder(deleteBookById))
 router.get('/books/:book_id', convertHanlder(getBookById))
 router.get('/books', convertHanlder(getBooksHandler))
 router.patch('/books/:book_id', convertHanlder(updateBookByIdHandler))
-
 
 export default router

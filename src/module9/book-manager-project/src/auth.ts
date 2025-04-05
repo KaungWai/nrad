@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from 'express'
 import jwt from 'jsonwebtoken'
+import { JwtPayload } from './types'
 
 export const auth = (roles: ('ADMIN' | 'USER')[]) => {
   return (request: Request, response: Response, next: NextFunction) => {
@@ -24,7 +25,7 @@ export const auth = (roles: ('ADMIN' | 'USER')[]) => {
 
     try {
       // decode jwt
-      const payload = jwt.verify(accessToken, secret) as any
+      const payload = jwt.verify(accessToken, secret) as JwtPayload
 
       // role check
       if (roles.indexOf(payload.role) < 0) {
@@ -33,6 +34,9 @@ export const auth = (roles: ('ADMIN' | 'USER')[]) => {
         })
         return
       }
+
+      // store user info in request object
+      request.user = payload
 
       // forward
       next()

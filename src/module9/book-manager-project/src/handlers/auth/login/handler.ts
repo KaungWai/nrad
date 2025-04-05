@@ -2,7 +2,7 @@ import status from 'http-status'
 import { loginRequestBodySchema } from './requestBody'
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
-import { Handler, HandlerError } from '../../../types'
+import { Handler, HandlerError, JwtPayload } from '../../../types'
 import { prismaInstance } from '../../../utils/prismaUtil'
 
 export const loginHandler: Handler = async (request, response) => {
@@ -28,7 +28,7 @@ export const loginHandler: Handler = async (request, response) => {
   }
 
   // payload
-  const payload = {
+  const payload: JwtPayload = {
     user_id: findUserResult.user_id,
     user_name: findUserResult.user_name,
     role: findUserResult.role,
