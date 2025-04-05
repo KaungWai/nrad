@@ -16,6 +16,9 @@ const logger = PinoHttp({
   transport: {
     target: 'pino-pretty',
   },
+  redact: {
+    paths: ['req.headers.cookie'] // hide access_token cookie from logging
+  },
 })
 
 const app = express()
@@ -23,10 +26,12 @@ const port = process.env.PORT ?? 8080
 const environment = process.env.ENVIRONMENT
 
 if (environment == 'development') {
-  app.use(cors({
-    origin: 'http://localhost:5173',
-    credentials: true
-  }))
+  app.use(
+    cors({
+      origin: 'http://localhost:5173',
+      credentials: true,
+    })
+  )
 }
 app.use(cookieParser())
 app.use(express.json())
