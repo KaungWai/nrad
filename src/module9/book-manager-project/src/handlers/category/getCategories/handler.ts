@@ -1,14 +1,14 @@
 import { Handler, Sorting } from "../../../types";
 import { prismaInstance } from "../../../utils/prismaUtil";
-import { getCategorysRequestQuerySchema } from "./requestQuery";
+import { getCategoriesRequestQuerySchema } from "./requestQuery";
 
-export const getCategorysHandler: Handler = async(request, response) => {
+export const getCategoriesHandler: Handler = async(request, response) => {
 
-    getCategorysRequestQuerySchema.validateSync(request.query, {
+    getCategoriesRequestQuerySchema.validateSync(request.query, {
         abortEarly: false
     })
 
-    const query = getCategorysRequestQuerySchema.cast(request.query)
+    const query = getCategoriesRequestQuerySchema.cast(request.query)
 
     const where = {
         category_id: query.filter.category_id,
@@ -17,11 +17,11 @@ export const getCategorysHandler: Handler = async(request, response) => {
         }
     }
 
-    const categoryscount = await prismaInstance.category.count({
+    const categoriescount = await prismaInstance.category.count({
         where: where
     })
 
-    const categorys = await prismaInstance.category.findMany({
+    const categories = await prismaInstance.category.findMany({
         where: where,
         orderBy: {
             category_name: query.sorting.category_name as Sorting,
@@ -31,9 +31,9 @@ export const getCategorysHandler: Handler = async(request, response) => {
     })
 
     const body = {
-        result: categorys,
+        result: categories,
         meta: {
-            total: categoryscount,
+            total: categoriescount,
             skip: query.skip,
             take: query.take
         }

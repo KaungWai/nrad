@@ -1,6 +1,6 @@
 import * as Yup from 'yup'
 
-export const getCategorysRequestQuerySchema = Yup.object({
+export const getCategoriesRequestQuerySchema = Yup.object({
     filter: Yup.object({
         category_id: Yup.string(),
         category_name: Yup.string(),

@@ -27,7 +27,7 @@ import { updatePublisherByIdHandler } from './handlers/publisher/updatePublisher
 import { createCategoryHandler } from './handlers/category/createCategory/handler'
 import { deleteCategoryById } from './handlers/category/deleteCategoryById/handler'
 import { getCategoryById } from './handlers/category/getCategoryById/handler'
-import { getCategorysHandler } from './handlers/category/getCategorys/handler'
+import { getCategoriesHandler } from './handlers/category/getCategories/handler'
 import { updateCategoryByIdHandler } from './handlers/category/updateCategoryById/handler'
 import { createBookHandler } from './handlers/book/createBook/handler'
 import { deleteBookById } from './handlers/book/deleteBookById/handler'
@@ -90,11 +90,11 @@ router.get('/publishers/:publisher_id', convertHanlder(getPublisherById))
 router.get('/publishers', convertHanlder(getPublishersHandler))
 router.patch('/publishers/:publisher_id', convertHanlder(updatePublisherByIdHandler))
 // category
-router.post('/categorys', convertHanlder(createCategoryHandler))
-router.delete('/categorys/:category_id', convertHanlder(deleteCategoryById))
-router.get('/categorys/:category_id', convertHanlder(getCategoryById))
-router.get('/categorys', convertHanlder(getCategorysHandler))
-router.patch('/categorys/:category_id', convertHanlder(updateCategoryByIdHandler))
+router.post('/categories', convertHanlder(createCategoryHandler))
+router.delete('/categories/:category_id', convertHanlder(deleteCategoryById))
+router.get('/categories/:category_id', convertHanlder(getCategoryById))
+router.get('/categories', convertHanlder(getCategoriesHandler))
+router.patch('/categories/:category_id', convertHanlder(updateCategoryByIdHandler))
 // book
 router.post('/books', convertHanlder(createBookHandler))
 router.delete('/books/:book_id', convertHanlder(deleteBookById))
