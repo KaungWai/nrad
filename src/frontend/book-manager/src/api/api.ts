@@ -131,7 +131,7 @@ function removeBlankFields(obj: any): any {
 export const useAPI = () => {
   const errorStore = useErrorStore()
 
-  const baseURL = 'https://localhost:3000'
+  const baseURL = import.meta.env.VITE_SOMETHING
 
   const instance = axios.create({
     baseURL: baseURL,
