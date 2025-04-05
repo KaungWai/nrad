@@ -11,8 +11,12 @@ export const getBooksHandler: Handler = async(request, response) => {
     const query = getBooksRequestQuerySchema.cast(request.query)
 
     const where = {
-        book_id: query.filter.book_id,
-        book_name: query.filter.book_name,
+        book_id: {
+            startsWith: query.filter.book_id
+        }, 
+        book_name:{
+            contains:  query.filter.book_name,
+        },
         published_date: query.filter.published_date ? new Date(query.filter.published_date) : undefined,
         category_id: query.filter.category_id,
         author_id: query.filter.author_id,
