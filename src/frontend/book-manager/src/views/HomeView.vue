@@ -1,18 +1,21 @@
 <script setup lang="ts">
-import { API, type Stats } from '@/api/api';
-import DefaultWrapper from '@/wrappers/DefaultWrapper.vue';
-import { ref } from 'vue';
+import { useAxios } from '@/api/axios'
+import type { Stats } from '@/types'
+import DefaultWrapper from '@/wrappers/DefaultWrapper.vue'
+import { ref } from 'vue'
+
+const axios = useAxios()
 
 const stats = ref<Stats>({
   category: 0,
   author: 0,
   publisher: 0,
-  book: 0
+  book: 0,
 })
 
 const init = async () => {
-  const response = await API.getStats()
-  if (response.ok) {
+  const response = await axios.get('/stats')
+  if (response.status < 400) {
     stats.value = response.data as Stats
   }
 }
@@ -21,24 +24,40 @@ init()
 </script>
 
 <template>
-  <DefaultWrapper :title="'Home'">
-    <table class="table m-0">
-      <thead>
-        <tr>
-          <th class="text-center">Books</th>
-          <th class="text-center">Categories</th>
-          <th class="text-center">Authors</th>
-          <th class="text-center">Publishers</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td class="text-center">{{ stats.book }}</td>
-          <td class="text-center">{{ stats.category }}</td>
-          <td class="text-center">{{ stats.author }}</td>
-          <td class="text-center">{{ stats.publisher }}</td>
-        </tr>
-      </tbody>
-    </table>
+  <DefaultWrapper :title="'Home'" :action-links="[]">
+    <div class="row g-3">
+      <div class="col">
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title">Books</h5>
+            <p class="card-text text-end display-6">{{ stats.book }}</p>
+          </div>
+        </div>
+      </div>
+      <div class="col">
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title">Categories</h5>
+            <p class="card-text text-end display-6">{{ stats.category }}</p>
+          </div>
+        </div>
+      </div>
+      <div class="col">
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title">Authors</h5>
+            <p class="card-text text-end display-6">{{ stats.author }}</p>
+          </div>
+        </div>
+      </div>
+      <div class="col">
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title">Publishers</h5>
+            <p class="card-text text-end display-6">{{ stats.publisher }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
   </DefaultWrapper>
 </template>

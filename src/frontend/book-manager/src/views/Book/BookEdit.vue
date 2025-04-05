@@ -1,149 +1,198 @@
 <script setup lang="ts">
-import { API, type Author, type Book, type Category, type Publisher } from '@/api/api'
-import router from '@/router'
+import { useAxios } from '@/api/axios'
 import DefaultWrapper from '@/wrappers/DefaultWrapper.vue'
 import { ref } from 'vue'
-import { RouterLink, useRoute } from 'vue-router'
+import { useRoute } from 'vue-router'
+import router from '@/router'
+import type { Author, Book, Category, GetAuthorsQuery, GetCategoriesQuery, GetPublishersQuery, Publisher } from '@/types'
+import { formatDateTime, formatDateToBind } from '@/utils/strUtils'
+import qs from 'qs'
 
-const form = ref<Book>({
-    book_id: '',
-    book_name: '',
-    created_at: '',
-    updated_at: '',
-    category: {
-        category_id: '',
-        category_name: ''
-    },
-    author: {
-        author_id: '',
-        author_name: ''
-    },
-    publisher: {
-        publisher_id: '',
-        publisher_name: ''
-    }
+const axios = useAxios()
+
+const selectLists = ref<{ categories: Category[]; authors: Author[]; publishers: Publisher[] }>({
+  categories: [],
+  authors: [],
+  publishers: [],
 })
 
-const categories = ref<Category[]>([])
-const authors = ref<Author[]>([])
-const publishers = ref<Publisher[]>([])
+const form = ref<Book>({
+  book_id: '',
+  book_name: '',
+  published_date: '',
+  category: {
+    category_id: '',
+    category_name: '',
+    created_at: '',
+    updated_at: '',
+  },
+  author: {
+    author_id: '',
+    author_name: '',
+    gender: '',
+    birth_date: '',
+    created_at: '',
+    updated_at: '',
+  },
+  publisher: {
+    publisher_id: '',
+    publisher_name: '',
+    created_at: '',
+    updated_at: '',
+  },
+  created_at: '',
+  updated_at: '',
+})
 
-const route = useRoute()
-const bookId = route.params.book_id as string
+const getSelectLists = async () => {
+  const queryC: GetCategoriesQuery = {
+    filter: {},
+    sorting: { category_name: 'asc' },
+    skip: 0,
+    take: 100,
+  }
+  const responseC = await axios.get(`/categories?${qs.stringify(queryC)}`)
+  if (responseC.status < 400) {
+    selectLists.value.categories = responseC.data.result
+  }
+
+  const queryA: GetAuthorsQuery = {
+    filter: {},
+    sorting: { author_name: 'asc' },
+    skip: 0,
+    take: 100,
+  }
+  const responseA = await axios.get(`/authors?${qs.stringify(queryA)}`)
+  if (responseA.status < 400) {
+    selectLists.value.authors = responseA.data.result
+  }
+
+  const queryP: GetPublishersQuery = {
+    filter: {},
+    sorting: { publisher_name: 'asc' },
+    skip: 0,
+    take: 100,
+  }
+  const responseP = await axios.get(`/publishers?${qs.stringify(queryP)}`)
+  if (responseP.status < 400) {
+    selectLists.value.publishers = responseP.data.result
+  }
+}
 
 const init = async () => {
-  const cResponse = await API.category.getCategories()
-  if (cResponse.ok) {
-    categories.value = cResponse.data ?? []
-  }
+  getSelectLists()
 
-  const aResponse = await API.author.getAuthors()
-  if (aResponse.ok) {
-    authors.value = aResponse.data ?? []
-  }
-
-  const pResponse = await API.publisher.getPublishers()
-  if (pResponse.ok) {
-    publishers.value = pResponse.data ?? []
-  }
-
-  const bResponse = await API.book.getBookById(bookId)
-  if (bResponse.ok) {
-    form.value = bResponse.data as Book
+  const route = useRoute()
+  const bookId = route.params.book_id as string
+  const response = await axios.get(`/books/${bookId}`)
+  if (response.status < 400) {
+    form.value = response.data as Book
+    format()
   }
 }
 
 const save = async () => {
-  
-  const data = {
+  const payload = {
+    book_id: form.value.book_id,
     book_name: form.value.book_name,
+    published_date: form.value.published_date,
     category_id: form.value.category.category_id,
     author_id: form.value.author.author_id,
-    publisher_id: form.value.publisher.publisher_id
+    publisher_id: form.value.publisher.publisher_id,
   }
 
-  console.log(data)
-  const response = await API.book.updateBook(bookId, data)
-  if (response.ok) {
-    init()
+  const response = await axios.patch(`/books/${form.value.book_id}`, payload)
+  if (response.status < 400) {
+    form.value = response.data as Book
+    format()
   }
 }
 
-const deletE = async () => {
-  const response = await API.book.deleteBook(form.value.book_id)
-  if (response.ok) {
+const remove = async () => {
+  if(!confirm("Are you sure want to delete?")) {
+    return;
+  }
+  const response = await axios.delete(`/books/${form.value.book_id}`)
+  if (response.status < 400) {
     router.push('/books')
   }
+}
+
+const format = () => {
+  form.value.published_date = formatDateToBind(form.value.published_date)
+  form.value.created_at = formatDateTime(form.value.created_at)
+  form.value.updated_at = formatDateTime(form.value.updated_at)
 }
 
 init()
 </script>
 
 <template>
-  <DefaultWrapper :title="'Edit Book'">
-    <div class="border-bottom pb-3 d-flex justify-content-between">
-      <button class="btn btn-sm btn-primary" @click="save">Save</button>
-      <span>
-        <button class="btn btn-sm btn-danger me-3" @click="deletE">Delete</button>
-        <RouterLink class="btn btn-sm btn-secondary" to="/books">Back</RouterLink>
-      </span>
+  <DefaultWrapper :title="'Edit Book'" :action-links="[{ name: 'Back', to: '/books', theme: 'secondary' }]">
+    <div class="row">
+      <div class="col">
+        <div class="input-group input-group-sm mb-3">
+          <span class="input-group-text">Book Id</span>
+          <input class="form-control form-control-sm" type="text" v-model="form.book_id" disabled />
+        </div>
+      </div>
+      <div class="col">
+        <div class="input-group input-group-sm mb-3">
+          <span class="input-group-text">Book Name</span>
+          <input class="form-control form-control-sm" type="text" v-model="form.book_name" />
+        </div>
+      </div>
+      <div class="col">
+        <div class="input-group input-group-sm mb-3">
+          <span class="input-group-text">Category</span>
+          <select class="form-select form-select-sm" v-model="form.category.category_id">
+            <option v-for="category in selectLists.categories" :value="category.category_id">{{ category.category_name }}</option>
+          </select>
+        </div>
+      </div>
+      <div class="col">
+        <div class="input-group input-group-sm mb-3">
+          <span class="input-group-text">Author</span>
+          <select class="form-select form-select-sm" v-model="form.author.author_id">
+            <option v-for="author in selectLists.authors" :value="author.author_id">{{ author.author_name }}</option>
+          </select>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col">
+        <div class="input-group input-group-sm mb-3">
+          <span class="input-group-text">Publisher</span>
+          <select class="form-select form-select-sm" v-model="form.publisher.publisher_id">
+            <option v-for="publisher in selectLists.publishers" :value="publisher.publisher_id">{{ publisher.publisher_name }}</option>
+          </select>
+        </div>
+      </div>
+      <div class="col">
+        <div class="input-group input-group-sm mb-3">
+          <span class="input-group-text">Publication Date</span>
+          <input class="form-control form-control-sm" type="date" v-model="form.published_date" />
+        </div>
+      </div>
+      <div class="col">
+        <div class="input-group input-group-sm mb-3">
+          <span class="input-group-text">Created At</span>
+          <input class="form-control form-control-sm" type="text" v-model="form.created_at" disabled />
+        </div>
+      </div>
+      <div class="col">
+        <div class="input-group input-group-sm mb-3">
+          <span class="input-group-text">Updated At</span>
+          <input class="form-control form-control-sm" type="text" v-model="form.updated_at" disabled />
+        </div>
+      </div>
     </div>
 
-    <table class="table m-0 mt-3">
-      <tbody>
-        <tr>
-          <td>
-            Book Id
-            <br>
-            <input class="form-control form-control-sm" type="text" v-model="form.book_id" readonly />
-          </td>
-          <td>
-            Book Name
-            <br>
-            <input class="form-control form-control-sm" type="text" v-model="form.book_name" />
-          </td>
-          <td></td>
-        </tr>
-        <tr>
-          <td>
-            Category
-            <br>
-            <select class="form-select" v-model="form.category.category_id">
-              <option selected value="">--select--</option>
-              <option v-for="c in categories" :value="c.category_id" :key="c.category_id">{{ c.category_name }}</option>
-            </select>
-          </td>
-          <td>
-            Author
-            <br>
-            <select class="form-select" v-model="form.author.author_id">
-              <option selected value="">--select--</option>
-              <option v-for="a in authors" :value="a.author_id" :key="a.author_id">{{ a.author_name }}</option>
-            </select>
-          </td>
-          <td>
-            Publisher
-            <br>
-            <select class="form-select" v-model="form.publisher.publisher_id">
-              <option selected value="">--select--</option>
-              <option v-for="p in publishers" :value="p.publisher_id" :key="p.publisher_id">{{ p.publisher_name }}</option>
-            </select>
-          </td>
-        </tr>
-        <tr>
-          <td>
-            Created At
-            <br>
-            <input class="form-control form-control-sm" type="text" v-model="form.created_at" readonly />
-          </td>
-          <td>
-            Updated Name
-            <br>
-            <input class="form-control form-control-sm" type="text" v-model="form.updated_at" readonly />
-          </td>
-          <td></td>
-        </tr>
-      </tbody>
-    </table>
+    <div class="d-flex justify-content-between">
+      <button class="btn btn-sm btn-success" @click="save">Update</button>
+      <span>
+        <button class="btn btn-sm btn-danger" @click="remove">Delete</button>
+      </span>
+    </div>
   </DefaultWrapper>
 </template>

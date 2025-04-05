@@ -7,34 +7,56 @@ import { useAxios } from '@/api/axios'
 const axios = useAxios()
 
 const form = ref<{
-  category_name: string
+  user_name: string
+  role: string
+  password: string
 }>({
-  category_name: '',
+  user_name: '',
+  role: '',
+  password: '',
 })
 
 const save = async () => {
-  const response = await axios.post(`/categories`, form.value)
+  const response = await axios.post(`/users`, form.value)
   if (response.status < 400) {
-    router.push(`/categories/edit/${response.data?.category_id}`)
+    router.push(`/users`)
   }
 }
 </script>
 
 <template>
-  <DefaultWrapper :title="'New Category'" :action-links="[{ name: 'Back', to: '/categories', theme: 'secondary' }]">
+  <DefaultWrapper :title="'New User'" :action-links="[{ name: 'Back', to: '/users', theme: 'secondary' }]">
     <div class="row">
       <div class="col">
         <div class="input-group input-group-sm mb-3">
-          <span class="input-group-text">Category Id</span>
+          <span class="input-group-text">User Id</span>
           <input class="form-control form-control-sm" type="text" placeholder="(auto)" disabled />
         </div>
       </div>
       <div class="col">
         <div class="input-group input-group-sm mb-3">
-          <span class="input-group-text">Category Name</span>
-          <input class="form-control form-control-sm" type="text" v-model="form.category_name" />
+          <span class="input-group-text">User Name</span>
+          <input class="form-control form-control-sm" type="text" v-model="form.user_name" />
         </div>
       </div>
+      <div class="col">
+        <div class="input-group input-group-sm mb-3">
+          <span class="input-group-text">Role</span>
+          <select class="form-select" v-model="form.role">
+            <option value="">--select--</option>
+            <option value="ADMIN">Admin</option>
+            <option value="USER">User</option>
+          </select>
+        </div>
+      </div>
+      <div class="col">
+        <div class="input-group input-group-sm mb-3">
+          <span class="input-group-text">Password</span>
+          <input class="form-control form-control-sm" type="text" v-model="form.password" />
+        </div>
+      </div>
+    </div>
+    <div class="row">
       <div class="col">
         <div class="input-group input-group-sm mb-3">
           <span class="input-group-text">Created At</span>
@@ -47,6 +69,8 @@ const save = async () => {
           <input class="form-control form-control-sm" type="text" placeholder="(auto)" disabled />
         </div>
       </div>
+      <div class="col"></div>
+      <div class="col"></div>
     </div>
 
     <div class="d-flex justify-content-between">

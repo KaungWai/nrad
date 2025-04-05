@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useAxios } from '@/api/axios'
 import qs from 'qs'
-import type { Author, GetAuthorsQuery, Meta } from '@/types'
+import type { User, GetUsersQuery, Meta } from '@/types'
 import { formatDate } from '@/utils/strUtils'
 import DefaultWrapper from '@/wrappers/DefaultWrapper.vue'
 import { ref, computed } from 'vue'
@@ -10,54 +10,61 @@ import { removeBlankFields } from '@/utils/objUtils'
 
 const axios = useAxios()
 
-const actionLinks = [{name: 'New Author', to: '/authors/new', theme: 'primary'}]
+const actionLinks = [{ name: 'New User', to: '/users/new', theme: 'primary' }]
 
-const authors = ref<Author[]>()
+const users = ref<User[]>()
 const meta = ref<Meta>()
-const searchForm = ref<GetAuthorsQuery>({
+const searchForm = ref<GetUsersQuery>({
   filter: {
-    author_id: '',
-    author_name: '',
-    gender: '',
-    birth_date: '',
+    user_id: '',
+    user_name: '',
+    role: '',
   },
   sorting: {
-    author_name: 'asc',
+    user_name: 'asc',
   },
   skip: 0,
   take: 10,
 })
 
+const remove = async (userId: string) => {
+  if(!confirm("Are you sure want to delete?")) {
+    return;
+  }
+  const response = await axios.delete(`/users/${userId}`)
+  search()
+}
+
 const search = async () => {
   searchForm.value.skip = 0
   searchForm.value.take = 10
-  const response = await axios.get(`/authors?${qs.stringify(removeBlankFields(searchForm.value))}`)
+  const response = await axios.get(`/users?${qs.stringify(removeBlankFields(searchForm.value))}`)
   if (response.status < 400) {
-    authors.value = response.data.result
+    users.value = response.data.result
     meta.value = response.data.meta
   }
 }
 
 const prev = async () => {
   searchForm.value.skip -= 10
-  const response = await axios.get(`/authors?${qs.stringify(removeBlankFields(searchForm.value))}`)
+  const response = await axios.get(`/users?${qs.stringify(removeBlankFields(searchForm.value))}`)
   if (response.status < 400) {
-    authors.value = response.data.result
+    users.value = response.data.result
     meta.value = response.data.meta
   }
 }
 
 const next = async () => {
   searchForm.value.skip += 10
-  const response = await axios.get(`/authors?${qs.stringify(removeBlankFields(searchForm.value))}`)
+  const response = await axios.get(`/users?${qs.stringify(removeBlankFields(searchForm.value))}`)
   if (response.status < 400) {
-    authors.value = response.data.result
+    users.value = response.data.result
     meta.value = response.data.meta
   }
 }
 
 const isPrevAvailable = computed(() => {
-  return searchForm.value.skip > 0;
+  return searchForm.value.skip > 0
 })
 
 const isNextAvailable = computed(() => {
@@ -68,35 +75,32 @@ search()
 </script>
 
 <template>
-  <DefaultWrapper :title="'Authors'" :action-links="actionLinks">
+  <DefaultWrapper :title="'Users'" :action-links="actionLinks">
     <div class="row">
       <div class="col">
         <div class="input-group input-group-sm mb-3">
-          <span class="input-group-text">Author Id</span>
-          <input type="text" class="form-control" v-model="searchForm.filter.author_id" />
+          <span class="input-group-text">User Id</span>
+          <input type="text" class="form-control" v-model="searchForm.filter.user_id" />
         </div>
       </div>
       <div class="col">
         <div class="input-group input-group-sm mb-3">
-          <span class="input-group-text">Author Name</span>
-          <input type="text" class="form-control" v-model="searchForm.filter.author_name" />
+          <span class="input-group-text">User Name</span>
+          <input type="text" class="form-control" v-model="searchForm.filter.user_name" />
         </div>
       </div>
       <div class="col">
         <div class="input-group input-group-sm mb-3">
-          <span class="input-group-text">Gender</span>
-          <select class="form-select" v-model="searchForm.filter.gender">
+          <span class="input-group-text">Role</span>
+          <select class="form-select" v-model="searchForm.filter.role">
             <option value="">--select--</option>
-            <option value="MALE">Male</option>
-            <option value="FEMALE">Female</option>
+            <option value="ADMIN">Admin</option>
+            <option value="USER">User</option>
           </select>
         </div>
       </div>
       <div class="col">
-        <div class="input-group input-group-sm mb-3">
-          <span class="input-group-text">Birthdate</span>
-          <input type="date" class="form-control" v-model="searchForm.filter.birth_date" />
-        </div>
+        <!-- empty -->
       </div>
     </div>
 
@@ -108,25 +112,23 @@ search()
       <thead>
         <tr>
           <th>No</th>
-          <th>Author Id</th>
-          <th>Author Name</th>
-          <th>Gender</th>
-          <th>Birthdate</th>
+          <th>User Id</th>
+          <th>User Name</th>
+          <th>Role</th>
           <th>Created At</th>
           <th>Updated At</th>
+          <th></th>
         </tr>
       </thead>
       <tbody>
-        <tr v-for="(author, idx) in authors" :key="author.author_id">
+        <tr v-for="(user, idx) in users" :key="user.user_id">
           <td>{{ searchForm.skip + idx + 1 }}</td>
-          <td>
-            <RouterLink :to="`/authors/edit/${author.author_id}`">{{ author.author_id }}</RouterLink>
-          </td>
-          <td>{{ author.author_name }}</td>
-          <td>{{ author.gender }}</td>
-          <td>{{ formatDate(author.birth_date) }}</td>
-          <td>{{ formatDate(author.created_at) }}</td>
-          <td>{{ formatDate(author.updated_at) }}</td>
+          <td>{{ user.user_id }}</td>
+          <td>{{ user.user_name }}</td>
+          <td>{{ user.role }}</td>
+          <td>{{ formatDate(user.created_at) }}</td>
+          <td>{{ formatDate(user.updated_at) }}</td>
+          <td><button class="btn btn-sm btn-danger" @click="() => remove(user.user_id)">Delete</button></td>
         </tr>
       </tbody>
     </table>

@@ -7,32 +7,32 @@ import { useAxios } from '@/api/axios'
 const axios = useAxios()
 
 const form = ref<{
-  category_name: string
+  publisher_name: string
 }>({
-  category_name: '',
+  publisher_name: '',
 })
 
 const save = async () => {
-  const response = await axios.post(`/categories`, form.value)
+  const response = await axios.post(`/publishers`, form.value)
   if (response.status < 400) {
-    router.push(`/categories/edit/${response.data?.category_id}`)
+    router.push(`/publishers/edit/${response.data?.publisher_id}`)
   }
 }
 </script>
 
 <template>
-  <DefaultWrapper :title="'New Category'" :action-links="[{ name: 'Back', to: '/categories', theme: 'secondary' }]">
+  <DefaultWrapper :title="'New Publisher'" :action-links="[{ name: 'Back', to: '/publishers', theme: 'secondary' }]">
     <div class="row">
       <div class="col">
         <div class="input-group input-group-sm mb-3">
-          <span class="input-group-text">Category Id</span>
+          <span class="input-group-text">Publisher Id</span>
           <input class="form-control form-control-sm" type="text" placeholder="(auto)" disabled />
         </div>
       </div>
       <div class="col">
         <div class="input-group input-group-sm mb-3">
-          <span class="input-group-text">Category Name</span>
-          <input class="form-control form-control-sm" type="text" v-model="form.category_name" />
+          <span class="input-group-text">Publisher Name</span>
+          <input class="form-control form-control-sm" type="text" v-model="form.publisher_name" />
         </div>
       </div>
       <div class="col">

@@ -1,42 +1,72 @@
 <script setup lang="ts">
-import { API, type Author, type Book, type Category, type Publisher } from '@/api/api'
 import DefaultWrapper from '@/wrappers/DefaultWrapper.vue'
 import { ref } from 'vue'
-import { RouterLink } from 'vue-router'
 import router from '@/router'
+import { useAxios } from '@/api/axios'
+import type { Author, Category, GetAuthorsQuery, GetCategoriesQuery, GetPublishersQuery, Publisher } from '@/types'
+import qs from 'qs'
 
-const form = ref({
+const axios = useAxios()
+
+const selectLists = ref<{ categories: Category[]; authors: Author[]; publishers: Publisher[] }>({
+  categories: [],
+  authors: [],
+  publishers: [],
+})
+
+const form = ref<{
+  book_name: string
+  published_date: string
+  category_id: string
+  author_id: string
+  publisher_id: string
+}>({
   book_name: '',
+  published_date: '',
   category_id: '',
   author_id: '',
   publisher_id: '',
 })
 
-const categories = ref<Category[]>([])
-const authors = ref<Author[]>([])
-const publishers = ref<Publisher[]>([])
-
 const init = async () => {
-  const cResponse = await API.category.getCategories()
-  if (cResponse.ok) {
-    categories.value = cResponse.data ?? []
+  const queryC: GetCategoriesQuery = {
+    filter: {},
+    sorting: { category_name: 'asc' },
+    skip: 0,
+    take: 100,
+  }
+  const responseC = await axios.get(`/categories?${qs.stringify(queryC)}`)
+  if (responseC.status < 400) {
+    selectLists.value.categories = responseC.data.result
   }
 
-  const aResponse = await API.author.getAuthors()
-  if (aResponse.ok) {
-    authors.value = aResponse.data ?? []
+  const queryA: GetAuthorsQuery = {
+    filter: {},
+    sorting: { author_name: 'asc' },
+    skip: 0,
+    take: 100,
+  }
+  const responseA = await axios.get(`/authors?${qs.stringify(queryA)}`)
+  if (responseA.status < 400) {
+    selectLists.value.authors = responseA.data.result
   }
 
-  const pResponse = await API.publisher.getPublishers()
-  if (pResponse.ok) {
-    publishers.value = pResponse.data ?? []
+  const queryP: GetPublishersQuery = {
+    filter: {},
+    sorting: { publisher_name: 'asc' },
+    skip: 0,
+    take: 100,
+  }
+  const responseP = await axios.get(`/publishers?${qs.stringify(queryP)}`)
+  if (responseP.status < 400) {
+    selectLists.value.publishers = responseP.data.result
   }
 }
 
 const save = async () => {
-  const response = await API.book.createBook(form.value)
-  if (response.ok) {
-    router.push(`/books/edit/${response.data?.book_id}`)
+  const response = await axios.post(`/books`, form.value)
+  if (response.status < 400) {
+    router.push(`/books/edit/${response.data.book_id}`)
   }
 }
 
@@ -44,67 +74,68 @@ init()
 </script>
 
 <template>
-  <DefaultWrapper :title="'New Book'">
-    <div class="border-bottom pb-3 d-flex justify-content-between">
-      <button class="btn btn-sm btn-primary" @click="save">Save</button>
-      <RouterLink class="btn btn-sm btn-secondary" to="/books">Back</RouterLink>
+  <DefaultWrapper :title="'New Book'" :action-links="[{ name: 'Back', to: '/books', theme: 'secondary' }]">
+    <div class="row">
+      <div class="col">
+        <div class="input-group input-group-sm mb-3">
+          <span class="input-group-text">Book Id</span>
+          <input class="form-control form-control-sm" type="text" placeholder="(auto)" disabled />
+        </div>
+      </div>
+      <div class="col">
+        <div class="input-group input-group-sm mb-3">
+          <span class="input-group-text">Book Name</span>
+          <input class="form-control form-control-sm" type="text" v-model="form.book_name" />
+        </div>
+      </div>
+      <div class="col">
+        <div class="input-group input-group-sm mb-3">
+          <span class="input-group-text">Category</span>
+          <select class="form-select form-select-sm" v-model="form.category_id">
+            <option v-for="category in selectLists.categories" :value="category.category_id">{{ category.category_name }}</option>
+          </select>
+        </div>
+      </div>
+      <div class="col">
+        <div class="input-group input-group-sm mb-3">
+          <span class="input-group-text">Author</span>
+          <select class="form-select form-select-sm" v-model="form.author_id">
+            <option v-for="author in selectLists.authors" :value="author.author_id">{{ author.author_name }}</option>
+          </select>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col">
+        <div class="input-group input-group-sm mb-3">
+          <span class="input-group-text">Publisher</span>
+          <select class="form-select form-select-sm" v-model="form.publisher_id">
+            <option v-for="publisher in selectLists.publishers" :value="publisher.publisher_id">{{ publisher.publisher_name }}</option>
+          </select>
+        </div>
+      </div>
+      <div class="col">
+        <div class="input-group input-group-sm mb-3">
+          <span class="input-group-text">Publication Date</span>
+          <input class="form-control form-control-sm" type="date" v-model="form.published_date" />
+        </div>
+      </div>
+      <div class="col">
+        <div class="input-group input-group-sm mb-3">
+          <span class="input-group-text">Created At</span>
+          <input class="form-control form-control-sm" type="text" placeholder="(auto)" disabled />
+        </div>
+      </div>
+      <div class="col">
+        <div class="input-group input-group-sm mb-3">
+          <span class="input-group-text">Updated At</span>
+          <input class="form-control form-control-sm" type="text" placeholder="(auto)" disabled />
+        </div>
+      </div>
     </div>
 
-    <table class="table m-0 mt-3">
-      <tbody>
-        <tr>
-          <td>
-            Book Id
-            <br>
-            <input class="form-control form-control-sm" type="text" placeholder="(auto)" disabled />
-          </td>
-          <td>
-            Book Name
-            <br>
-            <input class="form-control form-control-sm" type="text" v-model="form.book_name" />
-          </td>
-          <td></td>
-        </tr>
-        <tr>
-          <td>
-            Category
-            <br>
-            <select class="form-select" v-model="form.category_id">
-              <option selected value="">--select--</option>
-              <option v-for="c in categories" :value="c.category_id" :key="c.category_id">{{ c.category_name }}</option>
-            </select>
-          </td>
-          <td>
-            Author
-            <br>
-            <select class="form-select" v-model="form.author_id">
-              <option selected value="">--select--</option>
-              <option v-for="a in authors" :value="a.author_id" :key="a.author_id">{{ a.author_name }}</option>
-            </select>
-          </td>
-          <td>
-            Publisher
-            <br>
-            <select class="form-select" v-model="form.publisher_id">
-              <option selected value="">--select--</option>
-              <option v-for="p in publishers" :value="p.publisher_id" :key="p.publisher_id">{{ p.publisher_name }}</option>
-            </select>
-          </td>
-        </tr>
-        <tr>
-          <td>
-            Created At
-            <br>
-            <input class="form-control form-control-sm" type="text" placeholder="(auto)" disabled />
-          </td>
-          <td>
-            Updated Name
-            <br>
-            <input class="form-control form-control-sm" type="text" placeholder="(auto)" disabled />
-          </td>
-          <td></td>
-        </tr>
-      </tbody>
-    </table>
+    <div class="d-flex justify-content-between">
+      <button class="btn btn-sm btn-success" @click="save">Register</button>
+    </div>
   </DefaultWrapper>
 </template>

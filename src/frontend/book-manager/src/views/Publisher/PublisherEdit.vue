@@ -4,32 +4,32 @@ import DefaultWrapper from '@/wrappers/DefaultWrapper.vue'
 import { ref } from 'vue'
 import { useRoute } from 'vue-router'
 import router from '@/router'
-import type { Category } from '@/types'
-import { formatDateTime } from '@/utils/strUtils'
+import type { Publisher } from '@/types'
+import { formatDateTime, formatDateToBind } from '@/utils/strUtils'
 
 const axios = useAxios()
 
-const form = ref<Category>({
-  category_id: '',
-  category_name: '',
+const form = ref<Publisher>({
+  publisher_id: '',
+  publisher_name: '',
   created_at: '',
   updated_at: '',
 })
 
 const init = async () => {
   const route = useRoute()
-  const categoryId = route.params.category_id as string
-  const response = await axios.get(`/categories/${categoryId}`)
+  const publisherId = route.params.publisher_id as string
+  const response = await axios.get(`/publishers/${publisherId}`)
   if (response.status < 400) {
-    form.value = response.data as Category
+    form.value = response.data as Publisher
     format()
   }
 }
 
 const save = async () => {
-  const response = await axios.patch(`/categories/${form.value.category_id}`, form.value)
+  const response = await axios.patch(`/publishers/${form.value.publisher_id}`, form.value)
   if (response.status < 400) {
-    form.value = response.data as Category
+    form.value = response.data as Publisher
     format()
   }
 }
@@ -38,9 +38,9 @@ const remove = async () => {
   if(!confirm("Are you sure want to delete?")) {
     return;
   }
-  const response = await axios.delete(`/categories/${form.value.category_id}`)
+  const response = await axios.delete(`/publishers/${form.value.publisher_id}`)
   if (response.status < 400) {
-    router.push('/categories')
+    router.push('/publishers')
   }
 }
 
@@ -53,18 +53,18 @@ init()
 </script>
 
 <template>
-  <DefaultWrapper :title="'Edit Category'" :action-links="[{name: 'Back', to: '/categories', theme: 'secondary'}]">
+  <DefaultWrapper :title="'Edit Publisher'" :action-links="[{name: 'Back', to: '/publishers', theme: 'secondary'}]">
     <div class="row">
       <div class="col">
         <div class="input-group input-group-sm mb-3">
-          <span class="input-group-text">Category Id</span>
-          <input class="form-control form-control-sm" type="text" v-model="form.category_id" disabled />
+          <span class="input-group-text">Publisher Id</span>
+          <input class="form-control form-control-sm" type="text" v-model="form.publisher_id" disabled />
         </div>
       </div>
       <div class="col">
         <div class="input-group input-group-sm mb-3">
-          <span class="input-group-text">Category Name</span>
-          <input class="form-control form-control-sm" type="text" v-model="form.category_name" />
+          <span class="input-group-text">Publisher Name</span>
+          <input class="form-control form-control-sm" type="text" v-model="form.publisher_name" />
         </div>
       </div>
       <div class="col">

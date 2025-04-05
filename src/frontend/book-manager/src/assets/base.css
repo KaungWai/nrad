@@ -2,6 +2,10 @@
     font-family: monospace;
 }
 
+.clickable {
+  cursor: pointer;
+}
+
 .v-enter-active,
 .v-leave-active {
   transition: opacity 0.5s ease;
