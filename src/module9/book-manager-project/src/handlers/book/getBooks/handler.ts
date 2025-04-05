@@ -27,6 +27,7 @@ export const getBooksHandler: Handler = async(request, response) => {
         select: {
             book_id: true,
             book_name: true,
+            published_date: true,
             category: {
                 select: {
                     category_id: true,

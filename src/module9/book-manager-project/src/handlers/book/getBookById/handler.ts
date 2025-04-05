@@ -9,6 +9,16 @@ export const getBookById: Handler = async (request, response) => {
     where: {
      book_id: bookId,
     },
+    select: {
+      book_id: true,
+      book_name: true,
+      published_date: true,
+      author: true,
+      category: true,
+      publisher: true,
+      created_at: true,
+      updated_at: true,
+    }
   })
 
   if (!targetBook) {

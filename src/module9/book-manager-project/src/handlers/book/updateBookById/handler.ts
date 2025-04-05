@@ -65,6 +65,16 @@ if (!publisher) {
         publisher_id: body.publisher_id,
         updated_at: new Date()
     },
+    select: {
+      book_id: true,
+      book_name: true,
+      published_date: true,
+      author: true,
+      category: true,
+      publisher: true,
+      created_at: true,
+      updated_at: true,
+    }
   })
 
   return {
