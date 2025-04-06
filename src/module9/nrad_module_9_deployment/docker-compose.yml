@@ -1,0 +1,30 @@
+version: '3.8'
+
+services:
+  ubuntu:
+    container_name: ubuntu
+    stdin_open: true
+    tty: true
+    build:
+      context: ./
+      dockerfile: ./docker/ubuntu/Dockerfile
+    ports:
+      - "80:80"
+      - "443:443"
+    networks:
+      - ubuntu_network
+    command: /bin/bash
+
+  postgres:
+    container_name: postgres
+    build:
+      context: ./
+      dockerfile: ./docker/postgres/Dockerfile
+    ports:
+      - "5432:5432"
+    networks:
+      - ubuntu_network
+
+networks:
+  ubuntu_network:
+    driver: bridge
