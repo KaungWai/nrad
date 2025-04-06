@@ -4,10 +4,8 @@ import axios, { AxiosError } from 'axios'
 export const useAxios = () => {
   const errorStore = useErrorStore()
 
-  const baseURL = 'https://localhost:3000'
-
   const instance = axios.create({
-    baseURL: baseURL,
+    baseURL: import.meta.env.VITE_BASE_URL,
     headers: {
       'Content-Type': 'application/json',
     },

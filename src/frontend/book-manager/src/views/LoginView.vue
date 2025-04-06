@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import { useAPI, type Stats } from '@/api/api'
+import { useAxios } from '@/api/axios'
 import router from '@/router'
 import { useUserStore, type User } from '@/stores/user'
 import DefaultWrapper from '@/wrappers/DefaultWrapper.vue'
 import { ref, watch } from 'vue'
 
 const userStore = useUserStore()
-const API = useAPI()
+const axios = useAxios()
 
 const form = ref<{ username: string; password: string }>({
   username: '',
@@ -14,8 +14,8 @@ const form = ref<{ username: string; password: string }>({
 })
 
 const login = async () => {
-  const response = await API.login(form.value)
-  if (response.ok) {
+  const response =  await axios.post('/auth/login', form.value)
+  if (response.status < 400) {
     userStore.setUser(response.data as User)
   } else {
     userStore.setUser(null)
